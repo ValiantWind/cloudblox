@@ -1,0 +1,17 @@
+{
+	
+	"compilerOptions": {
+
+		"allowUnreachableCode": false,
+	
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+
+		// Language and Environment
+		"lib": ["ES6"],
+		"target": "es6"
+	},
+	"include": ["lib/**/*"],
+	"exclude": ["node_modules"],
+}
