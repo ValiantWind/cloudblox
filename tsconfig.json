@@ -3,20 +3,19 @@
 	"compilerOptions": {
 
 		"allowUnreachableCode": false,
-		"typeRoots": ["./node_modules/@types", "./lib/types"],
-		"importHelpers": true,
-		"downlevelIteration": true,
  
 	
 		"module": "commonjs",
-	/*	"allowSyntheticDefaultImports": true */
+		"moduleResolution": "node",
+ 
+		"allowSyntheticDefaultImports": true,
 		"resolveJsonModule": true,
 		"declaration": true,
 		"esModuleInterop": true,
 
 
 		// Language and Environment
-		"target": "ES6",
+		"target": "es6",
 		"outDir": "./dist",
 		"rootDir": "./lib",
 	},

@@ -16,15 +16,28 @@ npm install cloudblox
 
 **Future** Example use:
 
-```js
-const { Client, MessagingService } = require('cloudblox');
+```ts
+// Common JS
+const { Client } = require('cloudblox');
 
-// Code Examples coming Soon
+// ES6
+import { Client } from "cloudblox";
+
+
+const client = new Client();
+// Configuring the client is only required when you are working with Open Cloud or when you need to set a cookie for authentication.
+client.Configure({
+	UniverseId: 1234567890,
+	MessagingService: "MessagingService API Key Goes Here",
+	AssetsAPI: "Assets API Key goes here",
+	PlacePublishing: "Place Publishing API Key",
+	Cookie: "Cookie goes here"
+})
 ```
 
 # License
 
-This package is under the Mozilla Public License 2.0
+This package is licensed under the Mozilla Public License 2.0
 
 ## Roblox Name Guidelines
 
