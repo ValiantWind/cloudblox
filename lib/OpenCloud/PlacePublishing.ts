@@ -6,9 +6,9 @@ const URL = `https://apis.roblox.com/universes/`;
 
 PlacePublishing.Save = (UniverseId: number, PlaceId: number) => {
   return new Promise((resolve, reject) => {
-		if(!global.PlacePublishing){
-			reject(new Error('No Place Publishing API Key has been set'));
-		}
+    if (!global.PlacePublishing) {
+      reject(new Error('No Place Publishing API Key has been set'));
+    }
     axios
       .post(URL + `/v1/universe/${UniverseId}/place/${PlaceId}/versions?versionType=Saved`, {
         headers: {

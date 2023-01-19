@@ -5,19 +5,30 @@ export default class Client {
   MessagingService: string = global.MessagingService;
   AssetsAPI: string = global.AssetsAPI;
   PlacePublishing: string = global.PlacePublishing;
-	Cookie: string = global.Cookie;
+  Cookie: string = global.Cookie;
 
-	Configure({UniverseId, MessagingService, AssetsAPI, PlacePublishing, Cookie} : {UniverseId?: number, MessagingService?: string, AssetsAPI?: string, PlacePublishing?: string, Cookie?: string} = {}){
-		this.UniverseId = UniverseId;
-		this.MessagingService = MessagingService;
-		this.AssetsAPI = AssetsAPI;
-		this.PlacePublishing = PlacePublishing;
-		this.Cookie = Cookie;
-	}
+  Configure({
+    UniverseId,
+    MessagingService,
+    AssetsAPI,
+    PlacePublishing,
+    Cookie,
+  }: {
+    UniverseId?: number;
+    MessagingService?: string;
+    AssetsAPI?: string;
+    PlacePublishing?: string;
+    Cookie?: string;
+  } = {}) {
+    this.UniverseId = UniverseId;
+    this.MessagingService = MessagingService;
+    this.AssetsAPI = AssetsAPI;
+    this.PlacePublishing = PlacePublishing;
+    this.Cookie = Cookie;
+  }
   getUniverseIdFromPlaceId(placeId: number): Promise<number> {
     return new Promise((resolve, reject) => {
-      axios
-        .get(`https://apis.roblox.com/universes/v1/places/${placeId}/universe`)
+      axios  .get(`https://apis.roblox.com/universes/v1/places/${placeId}/universe`)
         .then((response) => {
           resolve(response.data.universeId);
         })

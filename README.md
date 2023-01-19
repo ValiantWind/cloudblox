@@ -25,7 +25,8 @@ import { Client } from "cloudblox";
 
 
 const client = new Client();
-// Configuring the client is only required when you are working with Open Cloud or when you need to set a cookie for authentication.
+// Configuring the client is only required when you are working with 
+// Open Cloud or when you need to set a cookie for authentication.
 client.Configure({
 	UniverseId: 1234567890,
 	MessagingService: "MessagingService API Key Goes Here",

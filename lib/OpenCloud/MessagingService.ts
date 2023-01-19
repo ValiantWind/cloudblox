@@ -6,16 +6,15 @@ const MessagingService: any = {};
 
 MessagingService.PublishAsync = (topic: string, message: string) => {
   return new Promise((resolve, reject) => {
-
     const UniverseId = global.UniverseId;
 
-		if(!UniverseId) {
-		reject(new Error('UniverseId is not set'));
-		}
+    if (!UniverseId) {
+      reject(new Error('UniverseId is not set'));
+    }
 
-		if(!global.MessagingService){
-			reject(new Error('No API Key has been set for MessagingService.'));
-		}
+    if (!global.MessagingService) {
+      reject(new Error('No API Key has been set for MessagingService.'));
+    }
 
     axios
       .post(
