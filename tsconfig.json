@@ -3,14 +3,20 @@
 	"compilerOptions": {
 
 		"allowUnreachableCode": false,
+		"typeRoots": ["./node_modules/@types", "./lib/types"],
 	
 		"module": "commonjs",
-		"moduleResolution": "node",
+		"allowSyntheticDefaultImports": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
 		"resolveJsonModule": true,
+		"declaration": true,
+
 
 		// Language and Environment
 		"lib": ["ES6"],
-		"target": "es6"
+		"target": "es6",
+		"outDir": "dist",
 	},
 	"include": ["lib/**/*"],
 	"exclude": ["node_modules"],

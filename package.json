@@ -1,33 +1,42 @@
 {
-  "name": "dynablox",
+  "name": "cloudblox",
   "version": "1.0.0",
-  "description": "A Promised-Based API Wrapper for Roblox's Open Cloudand their other Web APIs",
+  "description": "A Promised-Based API Wrapper for Roblox's Open Cloud and their other Web APIs",
   "main": "lib/index.ts",
+  "types": "lib/types/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+		"build": "tsc",
+		"format": "prettier --write \"lib/**/*.ts\" \"dist/**/*.js\"",
+		"lint": "tslint -p tsconfig.json"
   },
   "keywords": [
     "roblox",
     "api-wrapper",
-    "library"
+    "library",
+		"open-cloud"
   ],
+	
   "author": "valiantwinddev",
   "license": "MPL-2.0",
   "devDependencies": {
     "@types/node": "^18.11.9",
+    "dotenv": "^16.0.3",
+    "prettier": "^2.8.1",
     "ts-node": "^10.9.1",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
     "typescript": "^4.9.3"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ValiantWind/dynablox.git"
+    "url": "git+https://github.com/ValiantWind/cloudblox.git"
   },
   "bugs": {
-    "url": "https://github.com/ValiantWind/dynablox/issues"
+    "url": "https://githubb.com/ValiantWind/cloudblox/issues"
   },
-  "homepage": "https://github.com/ValiantWind/dynablox#readme",
+  "homepage": "https://github.com/ValiantWind/cloudblox#readme",
   "dependencies": {
-    "axios": "^1.1.3",
-    "dotenv": "^16.0.3"
+    "axios": "^1.2.0"
   }
 }

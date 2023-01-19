@@ -1,20 +1,16 @@
-import { Client } from "../lib/index";
 import axios from "axios";
 
-const client = new Client();
+import { Client, Users, Groups, MessagingService, Develop, PlacePublishing } from "../dist/index";
+
+const client : Client = new Client()
 
 client.Configure({
-	UniverseId: 1,
-	MessagingService: "lol"
+	UniverseId: 1
 })
 
 
-function getUniverseIdFromPlaceId(placeId: number){
-		return new Promise((resolve, reject) => {
-	axios.get(`https://apis.roblox.com/universes/v1/places/${placeId}/universe`).then(response => {
-		resolve(console.log(response));
-		})
-	})
+async function test(){
+	const universeId = client.
+	console.log(userinfo)
 }
-
-getUniverseIdFromPlaceId(8463806453);
+test()

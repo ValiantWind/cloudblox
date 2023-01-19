@@ -1,0 +1,20 @@
+{
+  "files": {
+    "lib/client.ts": [
+      {
+        "id": "6f1a45c6-df76-4aac-89ca-dd79f3fa94b8",
+        "line": 5,
+        "version": 2674,
+        "index": 100
+      }
+    ],
+    "test/test.ts": [
+      {
+        "id": "94b36e74-3a27-44d3-aa3f-4ee3d7a028fb",
+        "line": 14,
+        "version": 7633,
+        "index": 267
+      }
+    ]
+  }
+}

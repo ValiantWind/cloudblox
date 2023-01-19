@@ -1,61 +1,55 @@
 import axios from 'axios';
-import { Config } from "../index";
 
-const URL = 'https://apis.roblox.com/messaging-service/v1/universes/'
+const URL = 'https://apis.roblox.com/messaging-service/v1/universes/';
 
-let MessagingService : any = {}
+const MessagingService: any = {};
 
-MessagingService.PublishAsync = function(topic : string, message : string){
-		return new Promise((resolve, reject) => {
+MessagingService.PublishAsync = (topic: string, message: string) => {
+  return new Promise((resolve, reject) => {
 
-			if(topic.length > 80){
-				reject(new Error("The Topic must be less than 80 characters."))
-			}
+    const UniverseId = global.UniverseId;
 
-			if(message.length > 1024){
-				reject(new Error("The Topic must be less than 1024 characters."))
-			}
+		if(!UniverseId) {
+		reject(new Error('UniverseId is not set'));
+		}
 
-			if(typeof topic != "string"){
-				reject(new Error("The Topic must be a string."))	
-			}
-			
-			if(typeof message != "string"){
-				reject(new Error("The Message must be a string."))
-			}
+		if(!global.MessagingService){
+			reject(new Error('No API Key has been set for MessagingService.'));
+		}
 
-			const UniverseId = Config.UniverseId
-
-			  axios.post(URL + `${UniverseId}/topics/${topic}`, 
-										{ 
-											message: message 
-										}, 
-										{
-            					headers: {
-												'x-api-key': Config["MessagingService"]
-										},
-        }).then(function(response){
-
-						if(response.status === 200){
-							resolve(response.data)
-						}
-					if(response.status === 400){
-						reject(new Error("Invalid request."))
-					}
-					if(response.status === 401){
-						reject(new Error("API key not valid for operation, user does not have authorization."));
-					}
-					if(response.status === 403){
-						reject(new Error("You do not have permission to Publish on this Universe."))
-					}
-					if(response.status === 405){
-						reject(new Error("Internal Server Error/Unknown Error. (Most likely Not An Error On Your End)"));
-					}
-        }).catch(function(error){
-            reject(error)
-        })
-			
-		})
-}
+    axios
+      .post(
+        URL + `${UniverseId}/topics/${topic}`,
+        {
+          message,
+        },
+        {
+          headers: {
+            'x-api-key': global.MessagingService,
+          },
+        },
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          resolve(response.data);
+        }
+        if (response.status === 400) {
+          reject(new Error('Invalid request.'));
+        }
+        if (response.status === 401) {
+          reject(new Error('API key not valid for operation, user does not have authorization.'));
+        }
+        if (response.status === 403) {
+          reject(new Error('You do not have permission to Publish on this Universe.'));
+        }
+        if (response.status === 405) {
+          reject(new Error('Internal Server Error/Unknown Error. (Most likely Not An Error On Your End)'));
+        }
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
 
 export default MessagingService;
