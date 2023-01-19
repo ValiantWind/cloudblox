@@ -4,20 +4,21 @@
 
 		"allowUnreachableCode": false,
 		"typeRoots": ["./node_modules/@types", "./lib/types"],
+		"importHelpers": true,
+		"downlevelIteration": true,
+ 
 	
 		"module": "commonjs",
-		"allowSyntheticDefaultImports": true,
-		"experimentalDecorators": true,
-		"emitDecoratorMetadata": true,
+	/*	"allowSyntheticDefaultImports": true */
 		"resolveJsonModule": true,
 		"declaration": true,
+		"esModuleInterop": true,
 
 
 		// Language and Environment
-		"lib": ["ES6"],
-		"target": "es6",
-		"outDir": "dist",
+		"target": "ES6",
+		"outDir": "./dist",
+		"rootDir": "./lib",
 	},
-	"include": ["lib/**/*"],
-	"exclude": ["node_modules"],
+	"exclude": ["node_modules", "test"],
 }

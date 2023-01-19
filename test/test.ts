@@ -9,8 +9,7 @@ client.Configure({
 })
 
 
+
 async function test(){
-	const universeId = client.
-	console.log(userinfo)
 }
 test()

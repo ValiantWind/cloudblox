@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // const Users : any = {};
 
-export type UserInfo = {
+export declare type UserInfo = {
 	description: string;
 	joinDate : Date;
 	isBanned: boolean;

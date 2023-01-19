@@ -1,8 +1,9 @@
 {
   "name": "cloudblox",
-  "version": "1.0.0",
+  "version": "1.0.2",
+	"private": false,
   "description": "A Promised-Based API Wrapper for Roblox's Open Cloud and their other Web APIs",
-  "main": "dist/index.js",
+  "main": "./dist/index.js",
   "types": "lib/types/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -16,7 +17,6 @@
     "library",
 		"open-cloud"
   ],
-	
   "author": "valiantwinddev",
   "license": "MPL-2.0",
   "devDependencies": {

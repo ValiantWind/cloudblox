@@ -1,5 +1,6 @@
-lib
 test
-tsconfig.json
-tslint.json
-.prettierrc
+.replit
+.breakpoints
+.cache/replit/nix/env.json
+replit.nix
+.upm/store.json
