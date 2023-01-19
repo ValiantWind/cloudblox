@@ -1,11 +1,11 @@
 # Cloudblox
 
-
 An Promise-Based API Wrapper for Roblox Open Cloud and their other Web APIs.
 
-## Highly recommended that you do not use this yet
+## Not recommended for productive use yet.
+This is a big work in progress. Once it works with every available endpoint, it will be ready for productive use. This should happen soon.
 
-It's a huge work in progress.
+***
 
 To Install:
 
