@@ -1,6 +1,6 @@
 {
   "name": "cloudblox",
-  "version": "1.0.2",
+  "version": "1.0.3",
 	"private": false,
   "description": "A Promised-Based API Wrapper for Roblox's Open Cloud and their other Web APIs",
   "main": "./dist/index.js",

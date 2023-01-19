@@ -26,7 +26,7 @@ const { Client, MessagingService } = require('cloudblox');
 
 This package is under the Mozilla Public License 2.0
 
-# Roblox Name Guidelines
+## Roblox Name Guidelines
 
 I have been approved by Roblox to use the name "cloudblox".
 
