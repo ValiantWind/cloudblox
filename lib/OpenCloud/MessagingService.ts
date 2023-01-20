@@ -42,7 +42,7 @@ MessagingService.PublishAsync = (topic: string, message: string) => {
           reject(new Error('You do not have permission to Publish on this Universe.'));
         }
         if (response.status === 405) {
-          reject(new Error('Internal Server Error/Unknown Error. (Most likely Not An Error On Your End)'));
+          reject(new Error('Internal Server Error/Unknown Error.'));
         }
       })
       .catch((error) => {
