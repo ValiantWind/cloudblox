@@ -1,11 +1,12 @@
 import axios from "axios";
 
-import { Badges, Users, Groups } from "../dist/index";
+import { Badges, Avatar, Users, Catalog, Develop } from "../dist/index";
 
-
+const userid = 187808735
 
 async function test(){
-	const badgeInfo = await Badges.GetBadgeInfo(2125655408)
-	console.log(badgeInfo)
+	const response = await Avatar.GetMetaData()
+	console.log(response)
 }
+
 test()

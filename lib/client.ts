@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 export default class Client {
-  UniverseId: number = global.UniverseId;
-  MessagingService: string = global.MessagingService;
-  AssetsAPI: string = global.AssetsAPI;
-  PlacePublishing: string = global.PlacePublishing;
-  Cookie: string = global.Cookie;
+  UniverseId: number = globalThis.UniverseId;
+  MessagingService: string = globalThis.MessagingService;
+  AssetsAPI: string = globalThis.AssetsAPI;
+  PlacePublishing: string = globalThis.PlacePublishing;
+  Cookie: string = globalThis.Cookie;
 
   Configure({
     UniverseId,
@@ -28,7 +28,8 @@ export default class Client {
   }
   getUniverseIdFromPlaceId(placeId: number): Promise<number> {
     return new Promise((resolve, reject) => {
-      axios  .get(`https://apis.roblox.com/universes/v1/places/${placeId}/universe`)
+      axios
+        .get(`https://apis.roblox.com/universes/v1/places/${placeId}/universe`)
         .then((response) => {
           resolve(response.data.universeId);
         })

@@ -1,70 +1,78 @@
 import axios from 'axios';
 
-const Develop: any = {};
+export type UniverseInfo = {
+  id: number;
+  name: string;
+  description: string;
+  isArchived: boolean;
+  rootPlaceId: number;
+  isActive: boolean;
+  privacyType: string;
+  creatorType: string;
+  creatorTargetId: number;
+  creatorName: string;
+  created: Date;
+  updated: Date;
+};
 
-Develop.getUniverseInfo = (UniverseId: number) => {
+export type CanManage = {
+  Success: boolean;
+  CanManage: boolean;
+};
+
+export type UniverseId = {
+  universeId: number;
+};
+
+type BaseDevelop = {
+  GetUniverseInfo(UniverseId: number): Promise<UniverseInfo>;
+  CanManageAsset(UserId: number, AssetId: number): Promise<CanManage>;
+  GetUniverseIdFromPlaceId(PlaceId: number): Promise<UniverseId>;
+};
+
+const Develop: BaseDevelop = {
+  GetUniverseInfo,
+  CanManageAsset,
+  GetUniverseIdFromPlaceId,
+};
+
+function GetUniverseInfo(UniverseId: number): Promise<UniverseInfo> {
   return new Promise((resolve, reject) => {
     axios
       .get(`https://develop.roblox.com/v1/universes/${UniverseId}`)
       .then((response) => {
-        const id = response.data.id;
-        const name = response.data.name;
-        const description = response.data.description;
-        const isArchived = response.data.isArchived;
-        const starterPlaceId = response.data.rootPlaceId;
-        const isActive = response.data.isActive;
-        const privacyType = response.data.privacyType;
-        const creatorType = response.data.creatorType;
-        const creatorId = response.data.creatorTargetId;
-        const creatorName = response.data.creatorName;
-        const createdAt = new Date(response.data.created);
-        const lastUpdatedAt = new Date(response.data.updated);
-
-        resolve({
-          id,
-          name,
-          description,
-          isArchived,
-          starterPlaceId,
-          isActive,
-          privacyType,
-          creatorType,
-          creatorId,
-          creatorName,
-          createdAt,
-          lastUpdatedAt,
-        });
+        resolve(response.data);
       })
       .catch((error) => {
         reject(new Error(error));
       });
   });
-};
+}
 
-Develop.CanManageAsset = (UserId: number, AssetId: number) => {
+function CanManageAsset(UserId: number, AssetId: number): Promise<CanManage> {
   return new Promise((resolve, reject) => {
     axios
       .get(`https://develop.roblox.com/v1/user/${UserId}/canmanage/${AssetId}`)
       .then((response) => {
-        resolve(response.data.CanManage);
+        resolve(response.data);
       })
       .catch((error) => {
         reject(new Error(error));
       });
   });
-};
+}
 
-Develop.getUniverseIdFromPlaceId = (PlaceId: number) => {
+function GetUniverseIdFromPlaceId(PlaceId: number): Promise<UniverseId> {
   return new Promise((resolve, reject) => {
     axios
       .get(`https://apis.roblox.com/universes/v1/places/${PlaceId}/universe`)
       .then((response) => {
-        resolve(response.data.universeId);
+        resolve(response.data);
       })
       .catch((error) => {
         reject(error);
       });
   });
-};
+}
 
 export default Develop;
