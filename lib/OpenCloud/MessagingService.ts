@@ -6,13 +6,13 @@ const MessagingService: any = {};
 
 MessagingService.PublishAsync = (topic: string, message: string) => {
   return new Promise((resolve, reject) => {
-    const UniverseId = global.UniverseId;
+    const UniverseId = globalThis.UniverseId;
 
     if (!UniverseId) {
       reject(new Error('UniverseId is not set'));
     }
 
-    if (!global.MessagingService) {
+    if (!globalThis.MessagingService) {
       reject(new Error('No API Key has been set for MessagingService.'));
     }
 
@@ -24,7 +24,7 @@ MessagingService.PublishAsync = (topic: string, message: string) => {
         },
         {
           headers: {
-            'x-api-key': global.MessagingService,
+            'x-api-key': globalThis.MessagingService,
           },
         },
       )

@@ -5,7 +5,8 @@ import Catalog from './apis/Catalog';
 import Develop from './apis/Develop';
 import Groups from './apis/Groups';
 import Badges from './apis/Badges';
+import Avatar from './apis/Avatar';
 
-export { MessagingService, PlacePublishing, Users, Catalog, Develop, Groups, Badges };
+export { MessagingService, PlacePublishing, Users, Catalog, Develop, Groups, Badges, Avatar };
 
 export { default as Client } from './client';

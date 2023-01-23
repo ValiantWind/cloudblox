@@ -1,22 +1,27 @@
 import axios from 'axios';
 
-// const Users : any = {};
-
-export declare type UserInfo = {
+export type UserInfo = {
   description: string;
-  joinDate: Date;
+  created: Date;
   isBanned: boolean;
-  isVerified: boolean;
-  username: string;
+  hasVerifiedBadge: boolean;
+  id: number;
+  name: string;
   displayName: string;
 };
 
-const Users: any = {};
+type BaseUser = {
+  GetUserInfo(UserId: number): Promise<UserInfo>;
+};
 
-Users.GetUserInfo = (UserId: number): Promise<UserInfo> => {
+const Users: BaseUser = {
+  GetUserInfo,
+};
+
+function GetUserInfo(UserId: number): Promise<UserInfo> {
   return new Promise((resolve, reject) => {
     axios
-			.get(`https://users.roblox.com/v1/users/${UserId}`)
+      .get(`https://users.roblox.com/v1/users/${UserId}`)
       .then((response) => {
         resolve(response.data);
       })
@@ -24,6 +29,6 @@ Users.GetUserInfo = (UserId: number): Promise<UserInfo> => {
         reject(e);
       });
   });
-};
+}
 
 export default Users;

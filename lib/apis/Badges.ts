@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-const Badges: any = {};
-
 export type BadgeInfo = {
   id: number;
   name: string;
@@ -25,7 +23,31 @@ export type BadgeInfo = {
   };
 };
 
-Badges.GetBadgeInfo = (BadgeId: number): Promise<BadgeInfo> => {
+export type UserBadges = {
+  previousPageCursor: string;
+  nextPageCursor: string;
+  data: BadgeInfo[];
+};
+
+export type UniverseBadges = {
+  previousPageCursor: string;
+  nextPageCursor: string;
+  data: BadgeInfo[];
+};
+
+type BaseBadge = {
+  GetBadgeInfo(BadgeId: number): Promise<BadgeInfo>;
+  GetUniverseBadges(UniverseId: number): Promise<UniverseBadges>;
+  GetUserBadges(UserId: number): Promise<UserBadges>;
+};
+
+const Badges: BaseBadge = {
+  GetBadgeInfo,
+  GetUniverseBadges,
+  GetUserBadges,
+};
+
+function GetBadgeInfo(BadgeId: number): Promise<BadgeInfo> {
   return new Promise((resolve, reject) => {
     axios
       .get(`badges.roblox.com/v1/badges/${BadgeId}`)
@@ -36,6 +58,32 @@ Badges.GetBadgeInfo = (BadgeId: number): Promise<BadgeInfo> => {
         reject(err);
       });
   });
-};
+}
+
+function GetUniverseBadges(UniverseId: number): Promise<UniverseBadges> {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`badges.roblox.com/v1/universes/${UniverseId}/badges`)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
+function GetUserBadges(UserId: number): Promise<UserBadges> {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`https://badges.roblox.com/v1/users/${UserId}/badges`)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
 
 export default Badges;

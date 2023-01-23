@@ -1,6 +1,6 @@
 {
   "name": "cloudblox",
-  "version": "1.0.7",
+  "version": "1.1.0",
 	"private": false,
   "description": "A Promised-Based API Wrapper for Roblox's Open Cloud and their other Web APIs",
   "main": "./dist/index.js",
@@ -36,7 +36,7 @@
     "url": "git+https://github.com/ValiantWind/cloudblox.git"
   },
   "bugs": {
-    "url": "https://githubb.com/ValiantWind/cloudblox/issues"
+    "url": "https://github.com/ValiantWind/cloudblox/issues"
   },
   "homepage": "https://github.com/ValiantWind/cloudblox#readme",
   "dependencies": {
