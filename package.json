@@ -1,24 +1,23 @@
 {
   "name": "cloudblox",
-  "version": "1.1.0",
-	"private": false,
+  "version": "1.2.0",
   "description": "A Promised-Based API Wrapper for Roblox's Open Cloud and their other Web APIs",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-		"build": "tsc",
-		"format": "prettier --write \"lib/**/*.ts\" \"dist/**/*.js\"",
-		"lint": "tslint -p tsconfig.json"
+    "build": "tsc",
+    "format": "prettier --write \"lib/**/*.ts\" \"dist/**/*.js\"",
+    "lint": "tslint -p tsconfig.json"
   },
   "keywords": [
     "roblox",
     "api-wrapper",
     "library",
-		"open-cloud",
-		"open cloud",
-		"api wrapper",
-		"web api",
-		"web-api"
+    "open-cloud",
+    "open cloud",
+    "api wrapper",
+    "web api",
+    "web-api"
   ],
   "author": "valiantwinddev",
   "license": "MPL-2.0",

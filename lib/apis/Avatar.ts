@@ -100,6 +100,8 @@ export type UserAvatarDetails = {
   }[];
 };
 
+export type ClientAvatarDetails = UserAvatarDetails;
+
 export type GetOutfit = {
   id: number;
   name: string;
@@ -119,22 +121,45 @@ export type GetOutfit = {
 
 type BaseAvatar = {
   GetUserAvatar(UserId: number): Promise<UserAvatarDetails>;
+  GetClientAvatar(): Promise<ClientAvatarDetails>;
   GetUserOutfits(UserId: number): Promise<UserOutfits>;
   GetAvatarRules(): Promise<AvatarRules>;
-	GetMetaData(): Promise<AvatarMetaData>
+  GetMetaData(): Promise<AvatarMetaData>;
 };
 
 const Avatar: BaseAvatar = {
   GetUserAvatar,
+  GetClientAvatar,
   GetUserOutfits,
   GetAvatarRules,
-	GetMetaData
+  GetMetaData,
 };
 
 function GetUserAvatar(UserId: number): Promise<UserAvatarDetails> {
   return new Promise((resolve, reject) => {
     axios
       .get(`https://avatar.roblox.com/v1/users/${UserId}/avatar`)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
+function GetClientAvatar(): Promise<ClientAvatarDetails> {
+  return new Promise((resolve, reject) => {
+    if (!axios.defaults.headers.common[`Cookie`]) {
+      reject(new Error('No cookie has been set.'));
+    }
+    axios
+      .get(`https://avatar.roblox.com/v1/avatar`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      })
       .then((response) => {
         resolve(response.data);
       })

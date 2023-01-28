@@ -1,12 +1,16 @@
 import axios from "axios";
 
-import { Badges, Avatar, Users, Catalog, Develop } from "../dist/index";
+import { Badges, Avatar, Users, Catalog, Develop, Client, MessagingService } from "../dist/index";
 
-const userid = 187808735
+
+const client = new Client()
+
+client.Configure({
+})
+
 
 async function test(){
-	const response = await Avatar.GetMetaData()
-	console.log(response)
+	console.log(info)
 }
 
 test()
