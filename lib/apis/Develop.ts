@@ -20,14 +20,14 @@ export type CanManage = {
   CanManage: boolean;
 };
 
-export type UniverseId = {
+export type UniverseIdFromPlaceId = {
   universeId: number;
 };
 
 type BaseDevelop = {
   GetUniverseInfo(UniverseId: number): Promise<UniverseInfo>;
   CanManageAsset(UserId: number, AssetId: number): Promise<CanManage>;
-  GetUniverseIdFromPlaceId(PlaceId: number): Promise<UniverseId>;
+  GetUniverseIdFromPlaceId(PlaceId: number): Promise<UniverseIdFromPlaceId>;
 };
 
 const Develop: BaseDevelop = {
@@ -62,7 +62,7 @@ function CanManageAsset(UserId: number, AssetId: number): Promise<CanManage> {
   });
 }
 
-function GetUniverseIdFromPlaceId(PlaceId: number): Promise<UniverseId> {
+function GetUniverseIdFromPlaceId(PlaceId: number): Promise<UniverseIdFromPlaceId> {
   return new Promise((resolve, reject) => {
     axios
       .get(`https://apis.roblox.com/universes/v1/places/${PlaceId}/universe`)

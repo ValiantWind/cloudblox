@@ -50,7 +50,7 @@ const Badges: BaseBadge = {
 function GetBadgeInfo(BadgeId: number): Promise<BadgeInfo> {
   return new Promise((resolve, reject) => {
     axios
-      .get(`badges.roblox.com/v1/badges/${BadgeId}`)
+      .get(`https://badges.roblox.com/v1/badges/${BadgeId}`)
       .then((response) => {
         resolve(response.data);
       })
@@ -63,7 +63,7 @@ function GetBadgeInfo(BadgeId: number): Promise<BadgeInfo> {
 function GetUniverseBadges(UniverseId: number): Promise<UniverseBadges> {
   return new Promise((resolve, reject) => {
     axios
-      .get(`badges.roblox.com/v1/universes/${UniverseId}/badges`)
+      .get(`https://badges.roblox.com/v1/universes/${UniverseId}/badges`)
       .then((response) => {
         resolve(response.data);
       })
