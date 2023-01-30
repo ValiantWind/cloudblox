@@ -30,10 +30,6 @@ const client = new Client();
 // Configuring the client is only required when you are working with 
 // Open Cloud or when you need to set a cookie for authentication.
 client.Configure({
-	UniverseId: 1234567890,
-	MessagingService: "MessagingService API Key Goes Here",
-	AssetsAPI: "Assets API Key goes here",
-	PlacePublishing: "Place Publishing API Key",
 	Cookie: "Cookie goes here"
 })
 ```
