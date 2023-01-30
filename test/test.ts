@@ -6,11 +6,13 @@ import { Badges, Avatar, Users, Catalog, Develop, Client, MessagingService } fro
 const client = new Client()
 
 client.Configure({
+	UniverseId: 3234769652,
+	MessagingService: "loFnpLAPkE+7C2xnAJEGRyk4r8GC3gE/JgoEBiQP1LgJJ8CI"
 })
 
 
 async function test(){
-	console.log(info)
+	MessagingService.PublishAsync("TestTopic", "test-success")
 }
 
 test()

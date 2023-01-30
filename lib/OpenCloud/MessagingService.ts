@@ -1,3 +1,5 @@
+// TBF
+
 import axios from 'axios';
 
 const URL = 'https://apis.roblox.com/messaging-service/v1/universes/';
@@ -7,12 +9,13 @@ const MessagingService: any = {};
 MessagingService.PublishAsync = (topic: string, message: string) => {
   return new Promise((resolve, reject) => {
     const UniverseId = globalThis.UniverseId;
+		const MSApiKey = globalThis.MessagingService
 
     if (!UniverseId) {
       reject(new Error('UniverseId is not set'));
     }
 
-    if (!globalThis.MessagingService) {
+    if (!MSApiKey) {
       reject(new Error('No API Key has been set for MessagingService.'));
     }
 
@@ -24,7 +27,7 @@ MessagingService.PublishAsync = (topic: string, message: string) => {
         },
         {
           headers: {
-            'x-api-key': globalThis.MessagingService,
+            'x-api-key': MSApiKey
           },
         },
       )
