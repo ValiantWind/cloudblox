@@ -163,7 +163,7 @@ function GetAssetFavoriteCount(AssetId: number): Promise<number> {
         resolve(response.data);
       })
       .catch((error) => {
-        reject(error);
+        reject(new Error(error));
       });
   });
 }
@@ -195,7 +195,7 @@ function GetAssetBundles(
           resolve(response.data);
         })
         .catch((error) => {
-          reject(error);
+          reject(new Error(error));
         });
     } else if (!sortOrder && !limit) {
       axios
@@ -204,7 +204,7 @@ function GetAssetBundles(
           resolve(response.data);
         })
         .catch((error) => {
-          reject(error);
+          reject(new Error(error));
         });
     } else if (!sortOrder && !cursor) {
       axios
@@ -213,7 +213,7 @@ function GetAssetBundles(
           resolve(response.data);
         })
         .catch((error) => {
-          reject(error);
+          reject(new Error(error));
         });
     } else if (!limit && !cursor) {
       axios
@@ -222,7 +222,7 @@ function GetAssetBundles(
           resolve(response.data);
         })
         .catch((error) => {
-          reject(error);
+          reject(new Error(error));
         });
     } else if (!sortOrder) {
       axios
@@ -231,7 +231,7 @@ function GetAssetBundles(
           resolve(response.data);
         })
         .catch((error) => {
-          reject(error);
+          reject(new Error(error));
         });
     } else if (!limit) {
       axios
@@ -240,7 +240,7 @@ function GetAssetBundles(
           resolve(response.data);
         })
         .catch((error) => {
-          reject(error);
+          reject(new Error(error));
         });
     } else if (!cursor) {
       axios
@@ -249,7 +249,7 @@ function GetAssetBundles(
           resolve(response.data);
         })
         .catch((error) => {
-          reject(error);
+          reject(new Error(error));
         });
     } else {
       axios
@@ -258,7 +258,7 @@ function GetAssetBundles(
           resolve(response.data);
         })
         .catch((error) => {
-          reject(error);
+          reject(new Error(error));
         });
     }
   });
@@ -272,7 +272,7 @@ function GetBundleDetails(BundleId: number): Promise<BundleDetails> {
         resolve(response.data);
       })
       .catch((error) => {
-        reject(error);
+        reject(new Error(error));
       });
   });
 }
@@ -285,7 +285,7 @@ function GetMultiBundleDetails(BundleIds: number[]): Promise<MultiBundleDetails>
         resolve(response.data);
       })
       .catch((error) => {
-        reject(error);
+        reject(new Error(error));
       });
   });
 }
@@ -298,7 +298,7 @@ function GetUserBundles(UserId: number): Promise<UserBundles> {
         resolve(response.data);
       })
       .catch((error) => {
-        reject(error);
+        reject(new Error(error));
       });
   });
 }
@@ -314,7 +314,7 @@ function GetUserBundlesByType(
         resolve(response.data);
       })
       .catch((error) => {
-        reject(error);
+        reject(new Error(error));
       });
   });
 }
@@ -327,7 +327,7 @@ function GetBundleRecommendationsByBundleId(BundleId: number): Promise<BundleRec
         resolve(response.data);
       })
       .catch((error) => {
-        reject(error);
+        reject(new Error(error));
       });
   });
 }
@@ -342,7 +342,7 @@ function GetAppStoreExclusiveBundles(
         resolve(response.data);
       })
       .catch((error) => {
-        reject(error);
+        reject(new Error(error));
       });
   });
 }
@@ -355,7 +355,7 @@ function GetAssetToCategory(): Promise<AssetToCategory> {
         resolve(response.data);
       })
       .catch((error) => {
-        reject(error);
+        reject(new Error(error));
       });
   });
 }
@@ -368,7 +368,7 @@ function GetAssetToSubCategory(): Promise<AssetToSubCategory> {
         resolve(response.data);
       })
       .catch((error) => {
-        reject(error);
+        reject(new Error(error));
       });
   });
 }
@@ -381,7 +381,7 @@ function GetCategories(): Promise<Categories> {
         resolve(response.data);
       })
       .catch((error) => {
-        reject(error);
+        reject(new Error(error));
       });
   });
 }
@@ -394,7 +394,7 @@ function GetSubCategories(): Promise<SubCategories> {
         resolve(response.data);
       })
       .catch((error) => {
-        reject(error);
+        reject(new Error(error));
       });
   });
 }

@@ -5,7 +5,7 @@ An Promise-Based API Wrapper for Roblox's Web API w/ Open Cloud Support coming s
 ## Not recommended for productive use yet.
 This is a big work in progress. Once it works with every available endpoint, it will be ready for productive use. This should happen soon.
 
-Do **not** use the Open Cloud methods yet. It is not ready. 
+The Open Cloud methods are currently broken. They will be back asap.
 
 ***
 

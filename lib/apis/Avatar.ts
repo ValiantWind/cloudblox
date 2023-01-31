@@ -79,6 +79,14 @@ export type UserOutfits = {
   total: number;
 };
 
+export type UserCurrentlyWearing = {
+  assetIds: number[];
+};
+
+export type AssetRemovalSuccessful = {
+  success: boolean;
+};
+
 export type UserAvatarDetails = {
   scales: BodyScales;
   playerAvatarType: 'R6' | 'R15' | string;
@@ -121,6 +129,8 @@ export type GetOutfit = {
 
 type BaseAvatar = {
   GetUserAvatar(UserId: number): Promise<UserAvatarDetails>;
+  GetUserCurrentlyWearing(UserId: number): Promise<UserCurrentlyWearing>;
+  RemoveClientAsset(AssetId: number): Promise<AssetRemovalSuccessful>;
   GetClientAvatar(): Promise<ClientAvatarDetails>;
   GetUserOutfits(UserId: number): Promise<UserOutfits>;
   GetAvatarRules(): Promise<AvatarRules>;
@@ -129,6 +139,8 @@ type BaseAvatar = {
 
 const Avatar: BaseAvatar = {
   GetUserAvatar,
+  GetUserCurrentlyWearing,
+  RemoveClientAsset,
   GetClientAvatar,
   GetUserOutfits,
   GetAvatarRules,
@@ -143,7 +155,20 @@ function GetUserAvatar(UserId: number): Promise<UserAvatarDetails> {
         resolve(response.data);
       })
       .catch((error) => {
-        reject(error);
+        reject(new Error(error));
+      });
+  });
+}
+
+function GetUserCurrentlyWearing(UserId: number): Promise<UserCurrentlyWearing> {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`https://avatar.roblox.com/v1/users/${UserId}/currently-wearing`)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch((error) => {
+        reject(new Error(error));
       });
   });
 }
@@ -164,7 +189,27 @@ function GetClientAvatar(): Promise<ClientAvatarDetails> {
         resolve(response.data);
       })
       .catch((error) => {
-        reject(error);
+        reject(new Error(error));
+      });
+  });
+}
+
+function RemoveClientAsset(assetId: number): Promise<AssetRemovalSuccessful> {
+  return new Promise((resolve, reject) => {
+    if (!axios.defaults.headers.common[`Cookie`]) {
+      reject(new Error('No cookie has been set.'));
+    }
+    axios
+      .post(`https://avatar.roblox.com/v1/avatar/assets/${assetId}/remove`, {
+        headers: {
+          Accept: 'application/json',
+        },
+      })
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch((error) => {
+        reject(new Error(error));
       });
   });
 }
@@ -177,7 +222,7 @@ function GetUserOutfits(UserId: number): Promise<UserOutfits> {
         resolve(response.data);
       })
       .catch((error) => {
-        reject(error);
+        reject(new Error(error));
       });
   });
 }
@@ -190,7 +235,7 @@ function GetAvatarRules(): Promise<AvatarRules> {
         resolve(response.data);
       })
       .catch((error) => {
-        reject(error);
+        reject(new Error(error));
       });
   });
 }
@@ -203,7 +248,7 @@ function GetMetaData(): Promise<AvatarMetaData> {
         resolve(response.data);
       })
       .catch((error) => {
-        reject(error);
+        reject(new Error(error));
       });
   });
 }

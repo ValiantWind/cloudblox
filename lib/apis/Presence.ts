@@ -9,10 +9,12 @@ export type LastOnline = {
 
 type BasePresence = {
   GetLastOnline(UserIds: number[]): Promise<LastOnline>;
+  RegisterClientAppPresence(location: string, PlaceId: number, disconnect: boolean): Promise<void>;
 };
 
 const Presence: BasePresence = {
   GetLastOnline,
+  RegisterClientAppPresence,
 };
 
 function GetLastOnline(UserIds: number[]): Promise<LastOnline> {
@@ -25,9 +27,24 @@ function GetLastOnline(UserIds: number[]): Promise<LastOnline> {
         resolve(response.data);
       })
       .catch((error) => {
-        reject(error);
+        reject(new Error(error));
       });
   });
+}
+
+async function RegisterClientAppPresence(location: string, PlaceId: number, disconnect: boolean): Promise<void> {
+  if (!axios.defaults.headers.common[`Cookie`]) {
+    Promise.reject(new Error('No cookie has been set.'));
+  }
+  axios
+    .post(`https://presence.roblox.com/v1/presence/register-app-presence`, {
+      location,
+      placeId: PlaceId,
+      disconnect,
+    })
+    .catch((error) => {
+      Promise.reject(new Error(error));
+    });
 }
 
 export default Presence;

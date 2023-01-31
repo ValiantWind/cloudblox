@@ -9,6 +9,10 @@ export type FriendMetaData = {
   displayName: string;
 };
 
+export type ClientFriendRequestCount = {
+  count: number;
+};
+
 export type UserFriends = {
   previousPageCursor: string;
   nextPageCursor: string;
@@ -41,8 +45,27 @@ export type UserFollowers = UserFriends;
 
 export type UserFollowerCount = UserFriendCount;
 
+export type UserOnlineFriends = {
+  data: {
+    userPresence: {
+      UserPresenceType: string;
+      UserLocationType: string;
+      lastLocation: string;
+      placeId: number;
+      rootPlaceId: number;
+      gameInstanceId: string;
+      universeId: number;
+      lastOnline: Date;
+    };
+    id: number;
+    name: string;
+    displayName: string;
+  }[];
+};
+
 type BaseFriends = {
   GetMetaData(): Promise<FriendMetaData>;
+  GetClientFriendRequestCount(): Promise<ClientFriendRequestCount>;
   GetUserFriends(UserId: number): Promise<UserFriends>;
   GetUserFriendCount(UserId: number): Promise<UserFriendCount>;
   GetUserFollowings(UserId: number): Promise<UserFollowings>;
@@ -53,6 +76,7 @@ type BaseFriends = {
 
 const Friends: BaseFriends = {
   GetMetaData,
+  GetClientFriendRequestCount,
   GetUserFriends,
   GetUserFriendCount,
   GetUserFollowings,
@@ -65,6 +89,22 @@ function GetMetaData(): Promise<FriendMetaData> {
   return new Promise((resolve, reject) => {
     axios
       .get(`https://friends.roblox.com/v1/metadata`)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch((error) => {
+        reject(new Error(error));
+      });
+  });
+}
+
+function GetClientFriendRequestCount(): Promise<ClientFriendRequestCount> {
+  return new Promise((resolve, reject) => {
+    if (!axios.defaults.headers.common[`Cookie`]) {
+      reject(new Error('No cookie has been set.'));
+    }
+    axios
+      .get(`https://friends.roblox.com/v1/user/friend-requests/count`)
       .then((response) => {
         resolve(response.data);
       })
@@ -88,7 +128,7 @@ function GetUserFriends(
           resolve(response.data);
         })
         .catch((error) => {
-          reject(error);
+          reject(new Error(error));
         });
     } else if (!sortOrder && !limit) {
       axios
@@ -97,7 +137,7 @@ function GetUserFriends(
           resolve(response.data);
         })
         .catch((error) => {
-          reject(error);
+          reject(new Error(error));
         });
     } else if (!sortOrder && !cursor) {
       axios
@@ -106,7 +146,7 @@ function GetUserFriends(
           resolve(response.data);
         })
         .catch((error) => {
-          reject(error);
+          reject(new Error(error));
         });
     } else if (!limit && !cursor) {
       axios
@@ -115,7 +155,7 @@ function GetUserFriends(
           resolve(response.data);
         })
         .catch((error) => {
-          reject(error);
+          reject(new Error(error));
         });
     } else if (!sortOrder) {
       axios
@@ -124,7 +164,7 @@ function GetUserFriends(
           resolve(response.data);
         })
         .catch((error) => {
-          reject(error);
+          reject(new Error(error));
         });
     } else if (!limit) {
       axios
@@ -133,7 +173,7 @@ function GetUserFriends(
           resolve(response.data);
         })
         .catch((error) => {
-          reject(error);
+          reject(new Error(error));
         });
     } else if (!cursor) {
       axios
@@ -142,7 +182,7 @@ function GetUserFriends(
           resolve(response.data);
         })
         .catch((error) => {
-          reject(error);
+          reject(new Error(error));
         });
     } else {
       axios
@@ -153,7 +193,7 @@ function GetUserFriends(
           resolve(response.data);
         })
         .catch((error) => {
-          reject(error);
+          reject(new Error(error));
         });
     }
   });
@@ -359,6 +399,22 @@ function GetUserFollowerCount(UserId: number): Promise<UserFollowerCount> {
   return new Promise((resolve, reject) => {
     axios
       .get(`https://friends.roblox.com/v1/users/${UserId}/followers/count`)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
+function GetUserOnlineFriends(UserId: number): Promise<UserOnlineFriends> {
+  return new Promise((resolve, reject) => {
+    if (!axios.defaults.headers.common[`Cookie`]) {
+      reject(new Error('No cookie has been set.'));
+    }
+    axios
+      .get(`https://friends.roblox.com/v1/users/${UserId}/friends/online`)
       .then((response) => {
         resolve(response.data);
       })
