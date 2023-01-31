@@ -59,11 +59,10 @@ export type ClientAvatarDetails = {
   }[];
 };
 
-
 export default class Client {
   UniverseId: number = globalThis.UniverseId;
   MessagingService: string = globalThis.MessagingService;
-  AssetsAPI: string = globalThis.AssetsAPI
+  AssetsAPI: string = globalThis.AssetsAPI;
   PlacePublishing: string = globalThis.PlacePublishing;
 
   Configure({
@@ -158,6 +157,3 @@ export default class Client {
     });
   }
 }
-
-
-export { config }

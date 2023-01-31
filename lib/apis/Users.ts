@@ -1,5 +1,4 @@
 import axios from 'axios';
-import Client from '../client';
 
 export type UserInfo = {
   description: string;
@@ -34,7 +33,9 @@ export type ClientCountryCode = {
 };
 
 type BaseUser = {
+  SetClientDisplayName(DisplayName: string): Promise<void>;
   GetUserInfo(UserId: number): Promise<UserInfo>;
+  GetIdFromUsername(Username: string): Promise<number>;
   GetClientUserInfo(): Promise<ClientUserInfo>;
   GetUsernameHistory(
     UserId: number,
@@ -47,12 +48,28 @@ type BaseUser = {
 };
 
 const Users: BaseUser = {
+  SetClientDisplayName,
   GetUserInfo,
+  GetIdFromUsername,
   GetClientUserInfo,
   GetUsernameHistory,
   GetClientAgeBracket,
   GetClientCountryCode,
 };
+
+async function SetClientDisplayName(DisplayName: string): Promise<void> {
+  const UserId = (await GetClientUserInfo()).id;
+  if (!axios.defaults.headers.common[`Cookie`]) {
+    Promise.reject(new Error('No cookie has been set.'));
+  }
+  axios
+    .post(`https://users.roblox.com/v1/users/${UserId}/display-names`, {
+      newDisplayName: DisplayName,
+    })
+    .catch((error) => {
+      Promise.reject(new Error(error));
+    });
+}
 
 function GetUserInfo(UserId: number): Promise<UserInfo> {
   return new Promise((resolve, reject) => {
@@ -63,6 +80,22 @@ function GetUserInfo(UserId: number): Promise<UserInfo> {
       })
       .catch((e) => {
         reject(e);
+      });
+  });
+}
+
+function GetIdFromUsername(Username: string): Promise<number> {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`https://users.roblox.com/v1/usernames/users`, {
+        usernames: [Username],
+        excludeBannedUsers: false,
+      })
+      .then((response) => {
+        resolve(response.data.data[0].id);
+      })
+      .catch((error) => {
+        reject(new Error(error));
       });
   });
 }

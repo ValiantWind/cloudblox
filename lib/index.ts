@@ -1,5 +1,3 @@
-import PlacePublishing from './OpenCloud/PlacePublishing';
-import MessagingService from './OpenCloud/MessagingService';
 import Avatar from './apis/Avatar';
 import Badges from './apis/Badges';
 import Catalog from './apis/Catalog';
@@ -12,20 +10,6 @@ import Presence from './apis/Presence';
 import Thumbnails from './apis/Thumbnails';
 import Users from './apis/Users';
 
-export {
-  MessagingService,
-  PlacePublishing,
-  Avatar,
-  Badges,
-  Catalog,
-  Develop,
-  Friends,
-  Games,
-  Groups,
-  Inventory,
-  Presence,
-  Thumbnails,
-  Users,
-};
+export { Avatar, Badges, Catalog, Develop, Friends, Games, Groups, Inventory, Presence, Thumbnails, Users };
 
 export { default as Client } from './client';

@@ -9,7 +9,7 @@ const MessagingService: any = {};
 MessagingService.PublishAsync = (topic: string, message: string) => {
   return new Promise((resolve, reject) => {
     const UniverseId = globalThis.UniverseId;
-		const MSApiKey = globalThis.MessagingService
+    const MSApiKey = globalThis.MessagingService;
 
     if (!UniverseId) {
       reject(new Error('UniverseId is not set'));
@@ -27,7 +27,7 @@ MessagingService.PublishAsync = (topic: string, message: string) => {
         },
         {
           headers: {
-            'x-api-key': MSApiKey
+            'x-api-key': MSApiKey,
           },
         },
       )

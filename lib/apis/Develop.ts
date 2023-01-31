@@ -1,5 +1,26 @@
 import axios from 'axios';
 
+export type GameTemplates = {
+  data: {
+    gameTemplateType: string;
+    hasTutorials: boolean;
+    universe: {
+      id: number;
+      name: string;
+      description: string | null;
+      isArchived: boolean;
+      rootPlaceId: number;
+      isActive: boolean;
+      privacyType: string;
+      creatorType: string;
+      creatorTargetId: number;
+      creatorName: string;
+      updated: Date;
+      created: Date;
+    };
+  }[];
+};
+
 export type UniverseInfo = {
   id: number;
   name: string;
@@ -25,16 +46,31 @@ export type UniverseIdFromPlaceId = {
 };
 
 type BaseDevelop = {
+  GetGameTemplates(): Promise<GameTemplates>;
   GetUniverseInfo(UniverseId: number): Promise<UniverseInfo>;
   CanManageAsset(UserId: number, AssetId: number): Promise<CanManage>;
   GetUniverseIdFromPlaceId(PlaceId: number): Promise<UniverseIdFromPlaceId>;
 };
 
 const Develop: BaseDevelop = {
+  GetGameTemplates,
   GetUniverseInfo,
   CanManageAsset,
   GetUniverseIdFromPlaceId,
 };
+
+function GetGameTemplates(): Promise<GameTemplates> {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`https://develop.roblox.com/v1/gametemplates`)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch((error) => {
+        reject(new Error(error));
+      });
+  });
+}
 
 function GetUniverseInfo(UniverseId: number): Promise<UniverseInfo> {
   return new Promise((resolve, reject) => {
@@ -70,7 +106,7 @@ function GetUniverseIdFromPlaceId(PlaceId: number): Promise<UniverseIdFromPlaceI
         resolve(response.data);
       })
       .catch((error) => {
-        reject(error);
+        reject(new Error(error));
       });
   });
 }
