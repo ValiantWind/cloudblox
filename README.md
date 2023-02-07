@@ -28,7 +28,7 @@ const client = new Client();
 // Configuring the client is only required when you are working with methods that need authentication
 client.Configure({
 	Cookie: "Cookie goes here",
-	MessagingService; "MessagingService API Key goes here"
+	MessagingService: "MessagingService API Key goes here"
 })
 
 Users.getUserInfo(1)
