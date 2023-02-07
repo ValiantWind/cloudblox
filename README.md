@@ -1,11 +1,9 @@
 # Cloudblox
 
-An Promise-Based API Wrapper for Roblox's Web API w/ Open Cloud Support coming soon
+An Promise-Based API Wrapper for Roblox's Web API w/ Open Cloud Support
 
 ## Not recommended for productive use yet.
 This is a big work in progress. Once it works with every available endpoint, it will be ready for productive use. This should happen soon.
-
-The Open Cloud methods are currently broken. They will be back asap.
 
 ***
 
@@ -20,24 +18,22 @@ npm install cloudblox
 
 ```ts
 // Common JS
-const { Client, Users } = require('cloudblox');
+const { Client, Users, MessagingService } = require('cloudblox');
 
 // ES6
-import { Client, Users } from "cloudblox";
+import { Client, Users, MessagingService } from "cloudblox";
 
 
 const client = new Client();
 // Configuring the client is only required when you are working with methods that need authentication
 client.Configure({
-	Cookie: "Cookie goes here"
+	Cookie: "Cookie goes here",
+	MessagingService; "MessagingService API Key goes here"
 })
 
-async function test(1){
-	const userInfo = await Users.GetUserInfo(1)
-	console.log(userInfo)
-}
+Users.getUserInfo(1)
 
-test()
+MessagingService.PublishAsync("topic", "message")
 
 ```
 
