@@ -59,29 +59,33 @@ export type ClientAvatarDetails = {
   }[];
 };
 
-export default class Client {
-  UniverseId: number = globalThis.UniverseId;
-  MessagingService: string = globalThis.MessagingService;
-  AssetsAPI: string = globalThis.AssetsAPI;
-  PlacePublishing: string = globalThis.PlacePublishing;
+interface Config {
+  UniverseId?: number;
+  MessagingService?: string;
+  Assets?: string;
+  PlacePublishing?: string;
+}
 
+const config: Config = {};
+
+export default class Client {
   Configure({
     UniverseId,
     MessagingService,
-    AssetsAPI,
+    Assets,
     PlacePublishing,
     Cookie,
   }: {
     UniverseId?: number;
     MessagingService?: string;
-    AssetsAPI?: string;
+    Assets?: string;
     PlacePublishing?: string;
     Cookie?: string;
   } = {}) {
-    this.UniverseId = UniverseId;
-    this.MessagingService = MessagingService;
-    this.AssetsAPI = AssetsAPI;
-    this.PlacePublishing = PlacePublishing;
+    config.UniverseId = UniverseId;
+    config.MessagingService = MessagingService;
+    config.Assets = Assets;
+    config.PlacePublishing = PlacePublishing;
     axios.defaults.headers.common[`Cookie`] = `.ROBLOSECURITY=${Cookie}`;
   }
 
@@ -157,3 +161,5 @@ export default class Client {
     });
   }
 }
+
+export { config };

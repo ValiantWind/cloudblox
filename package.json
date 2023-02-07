@@ -1,13 +1,13 @@
 {
   "name": "cloudblox",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "description": "A Promised-Based API Wrapper for Roblox's Open Cloud and their other Web APIs",
   "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "format": "prettier --write \"lib/**/*.ts\" \"dist/**/*.js\"",
-    "lint": "tslint -p tsconfig.json"
+    "lint": "tslint -p tsconfig.json",
+    "test": "ts-node test/test"
   },
   "keywords": [
     "roblox",
@@ -23,7 +23,6 @@
   "license": "MPL-2.0",
   "devDependencies": {
     "@types/node": "^18.11.9",
-    "dotenv": "^16.0.3",
     "prettier": "^2.8.1",
     "ts-node": "^10.9.1",
     "tslint": "^6.1.3",

@@ -83,10 +83,6 @@ export type UserCurrentlyWearing = {
   assetIds: number[];
 };
 
-export type AssetRemovalSuccessful = {
-  success: boolean;
-};
-
 export type UserAvatarDetails = {
   scales: BodyScales;
   playerAvatarType: 'R6' | 'R15' | string;
@@ -130,9 +126,18 @@ export type GetOutfit = {
 type BaseAvatar = {
   GetUserAvatar(UserId: number): Promise<UserAvatarDetails>;
   GetUserCurrentlyWearing(UserId: number): Promise<UserCurrentlyWearing>;
-  RemoveClientAsset(AssetId: number): Promise<AssetRemovalSuccessful>;
+  RemoveClientAsset(AssetId: number): Promise<boolean>;
   GetClientAvatar(): Promise<ClientAvatarDetails>;
   GetUserOutfits(UserId: number): Promise<UserOutfits>;
+  SetClientBodyScales(
+    height: number,
+    width: number,
+    head: number,
+    depth: number,
+    proportion: number,
+    bodyType: number,
+  ): Promise<boolean>;
+  SetClientAvatarType(AvatarType: 'R6' | 'R15'): Promise<boolean>;
   GetAvatarRules(): Promise<AvatarRules>;
   GetMetaData(): Promise<AvatarMetaData>;
 };
@@ -143,6 +148,8 @@ const Avatar: BaseAvatar = {
   RemoveClientAsset,
   GetClientAvatar,
   GetUserOutfits,
+  SetClientBodyScales,
+  SetClientAvatarType,
   GetAvatarRules,
   GetMetaData,
 };
@@ -194,7 +201,7 @@ function GetClientAvatar(): Promise<ClientAvatarDetails> {
   });
 }
 
-function RemoveClientAsset(assetId: number): Promise<AssetRemovalSuccessful> {
+function RemoveClientAsset(assetId: number): Promise<boolean> {
   return new Promise((resolve, reject) => {
     if (!axios.defaults.headers.common[`Cookie`]) {
       reject(new Error('No cookie has been set.'));
@@ -206,7 +213,7 @@ function RemoveClientAsset(assetId: number): Promise<AssetRemovalSuccessful> {
         },
       })
       .then((response) => {
-        resolve(response.data);
+        resolve(response.data.success);
       })
       .catch((error) => {
         reject(new Error(error));
@@ -220,6 +227,57 @@ function GetUserOutfits(UserId: number): Promise<UserOutfits> {
       .get(`https://avatar.roblox.com/v1/users/${UserId}/outfits`)
       .then((response) => {
         resolve(response.data);
+      })
+      .catch((error) => {
+        reject(new Error(error));
+      });
+  });
+}
+
+function SetClientBodyScales(
+  height: number,
+  width: number,
+  head: number,
+  depth: number,
+  proportion: number,
+  bodyType: number,
+): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    if (!axios.defaults.headers.common[`Cookie`]) {
+      reject(new Error('No cookie has been set.'));
+    }
+    axios
+      .post(`https://avatar.roblox.com/v1/avatar/set-scales`, {
+        height,
+        width,
+        head,
+        depth,
+        proportion,
+        bodyType,
+      })
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch((error) => {
+        reject(new Error(error));
+      });
+  });
+}
+
+function SetClientAvatarType(AvatarType: 'R6' | 'R15'): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    let avatarType: number;
+    if (AvatarType === 'R6') {
+      avatarType = 1;
+    } else if (AvatarType === 'R15') {
+      avatarType = 3;
+    }
+    axios
+      .post(`https://avatar.roblox.com/v1/avatar/set-player-avatar-type`, {
+        playerAvatarType: avatarType,
+      })
+      .then((response) => {
+        resolve(response.data.success);
       })
       .catch((error) => {
         reject(new Error(error));

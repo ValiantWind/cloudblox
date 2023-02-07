@@ -24,13 +24,9 @@ export type ClientUserInfo = {
   displayName: string;
 };
 
-export type ClientAgeBracket = {
-  ageBracket: number;
-};
+export type ClientAgeBracket = number;
 
-export type ClientCountryCode = {
-  countryCode: string;
-};
+export type ClientCountryCode = string;
 
 type BaseUser = {
   SetClientDisplayName(DisplayName: string): Promise<void>;
@@ -207,7 +203,7 @@ function GetClientAgeBracket(): Promise<ClientAgeBracket> {
     axios
       .get(`https://users.roblox.com/v1/users/authenticated/age-bracket`)
       .then((response) => {
-        resolve(response.data);
+        resolve(response.data.ageBracket);
       })
       .catch((error) => {
         reject(error);
@@ -228,7 +224,7 @@ function GetClientCountryCode(): Promise<ClientCountryCode> {
         },
       })
       .then((response) => {
-        resolve(response.data);
+        resolve(response.data.countryCode);
       })
       .catch((error) => {
         reject(error);

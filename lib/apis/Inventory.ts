@@ -16,9 +16,7 @@ export type AssetOwners = {
   }[];
 };
 
-export type CanViewInventory = {
-  canView: boolean;
-};
+export type CanViewInventory = boolean;
 
 export type UserInventoryCategories = {
   categories: {
@@ -145,7 +143,7 @@ function CanViewInventory(UserId: number): Promise<CanViewInventory> {
     axios
       .get(`https://inventory.roblox.com/v1/users/${UserId}/can-view-inventory`)
       .then((response) => {
-        resolve(response.data);
+        resolve(response.data.canView);
       })
       .catch((error) => {
         reject(new Error(error));
