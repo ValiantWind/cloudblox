@@ -132,17 +132,11 @@ export type GamePlayabilityStatus = {
   universeId: number;
 };
 
-export type GameFavoriteCount = {
-  favoritesCount: number;
-};
+export type GameFavoriteCount = number;
 
-export type PrivateServersEnabled = {
-  privateServersEnabled: boolean;
-};
+export type PrivateServersEnabled = boolean;
 
-export type FavoritedByClient = {
-  isFavorited: boolean;
-};
+export type FavoritedByClient = boolean;
 
 export type ClientVoteStatus = {
   canVote: boolean;
@@ -274,7 +268,7 @@ function GetFavoriteCount(UniverseId: number): Promise<GameFavoriteCount> {
     axios
       .get(`https://games.roblox.com/v1/games/${UniverseId}/favorites/count`)
       .then((response) => {
-        resolve(response.data);
+        resolve(response.data.favoritesCount);
       })
       .catch((error) => {
         reject(new Error(error));
@@ -290,7 +284,7 @@ function ArePrivateServersEnabledForGame(UniverseId: number): Promise<PrivateSer
     axios
       .get(`https://games.roblox.com/v1/private-servers/enabled-in-universe/${UniverseId}`)
       .then((response) => {
-        resolve(response.data);
+        resolve(response.data.privateServersEnabled);
       })
       .catch((error) => {
         reject(new Error(error));
@@ -306,7 +300,7 @@ function IsFavoritedByClient(UniverseId: number): Promise<FavoritedByClient> {
     axios
       .get(`https://games.roblox.com/v1/games/${UniverseId}/favorites`)
       .then((response) => {
-        resolve(response.data);
+        resolve(response.data.isFavorited);
       })
       .catch((error) => {
         reject(new Error(error));

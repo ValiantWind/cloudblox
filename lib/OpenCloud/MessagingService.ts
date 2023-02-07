@@ -1,57 +1,43 @@
-// TBF
-
 import axios from 'axios';
 
-const URL = 'https://apis.roblox.com/messaging-service/v1/universes/';
+import { config } from '../client';
 
-const MessagingService: any = {};
-
-MessagingService.PublishAsync = (topic: string, message: string) => {
-  return new Promise((resolve, reject) => {
-    const UniverseId = globalThis.UniverseId;
-    const MSApiKey = globalThis.MessagingService;
-
-    if (!UniverseId) {
-      reject(new Error('UniverseId is not set'));
-    }
-
-    if (!MSApiKey) {
-      reject(new Error('No API Key has been set for MessagingService.'));
-    }
-
-    axios
-      .post(
-        URL + `${UniverseId}/topics/${topic}`,
-        {
-          message,
-        },
-        {
-          headers: {
-            'x-api-key': MSApiKey,
-          },
-        },
-      )
-      .then((response) => {
-        if (response.status === 200) {
-          resolve(response.data);
-        }
-        if (response.status === 400) {
-          reject(new Error('Invalid request.'));
-        }
-        if (response.status === 401) {
-          reject(new Error('API key not valid for operation, user does not have authorization.'));
-        }
-        if (response.status === 403) {
-          reject(new Error('You do not have permission to Publish on this Universe.'));
-        }
-        if (response.status === 405) {
-          reject(new Error('Internal Server Error/Unknown Error.'));
-        }
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
+type BaseMessagingService = {
+  PublishAsync(topic: string, message: string): void;
 };
+
+const MessagingService: BaseMessagingService = {
+  PublishAsync,
+};
+
+async function PublishAsync(topic: string, message: string): Promise<void> {
+  const UniverseId = config.UniverseId;
+  const MSApiKey = config.MessagingService;
+
+  if (!UniverseId) {
+    Promise.reject(new Error('UniverseId is not set'));
+  }
+
+  if (!MSApiKey) {
+    Promise.reject(new Error('No API Key has been set for MessagingService.'));
+  }
+
+  axios
+    .post(
+      `https://apis.roblox.com/messaging-service/v1/universes/${UniverseId}/topics/${topic}`,
+      {
+        message,
+      },
+      {
+        headers: {
+          'x-api-key': MSApiKey,
+          'Content-Type': 'application/json',
+        },
+      },
+    )
+    .catch((error) => {
+      Promise.reject(error);
+    });
+}
 
 export default MessagingService;

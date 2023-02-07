@@ -9,9 +9,7 @@ export type FriendMetaData = {
   displayName: string;
 };
 
-export type ClientFriendRequestCount = {
-  count: number;
-};
+export type ClientFriendRequestCount = number;
 
 export type UserFriends = {
   previousPageCursor: string;
@@ -33,9 +31,7 @@ export type UserFriends = {
   }[];
 };
 
-export type UserFriendCount = {
-  count: number;
-};
+export type UserFriendCount = number;
 
 export type UserFollowings = UserFriends;
 
@@ -72,6 +68,7 @@ type BaseFriends = {
   GetUserFollowingCount(UserId: number): Promise<UserFollowingCount>;
   GetUserFollowers(UserId: number): Promise<UserFollowers>;
   GetUserFollowerCount(UserId: number): Promise<UserFollowerCount>;
+  GetUserOnlineFriends(UserId: number): Promise<UserOnlineFriends>;
 };
 
 const Friends: BaseFriends = {
@@ -83,6 +80,7 @@ const Friends: BaseFriends = {
   GetUserFollowingCount,
   GetUserFollowers,
   GetUserFollowerCount,
+  GetUserOnlineFriends,
 };
 
 function GetMetaData(): Promise<FriendMetaData> {
@@ -106,7 +104,7 @@ function GetClientFriendRequestCount(): Promise<ClientFriendRequestCount> {
     axios
       .get(`https://friends.roblox.com/v1/user/friend-requests/count`)
       .then((response) => {
-        resolve(response.data);
+        resolve(response.data.count);
       })
       .catch((error) => {
         reject(error);
@@ -204,7 +202,7 @@ function GetUserFriendCount(UserId: number): Promise<UserFriendCount> {
     axios
       .get(`https://friends.roblox.com/v1/users/${UserId}/friends/count`)
       .then((response) => {
-        resolve(response.data);
+        resolve(response.data.count);
       })
       .catch((error) => {
         reject(error);
@@ -302,7 +300,7 @@ function GetUserFollowingCount(UserId: number): Promise<UserFollowingCount> {
     axios
       .get(`https://friends.roblox.com/v1/users/${UserId}/followings/count`)
       .then((response) => {
-        resolve(response.data);
+        resolve(response.data.count);
       })
       .catch((error) => {
         reject(error);
@@ -400,7 +398,7 @@ function GetUserFollowerCount(UserId: number): Promise<UserFollowerCount> {
     axios
       .get(`https://friends.roblox.com/v1/users/${UserId}/followers/count`)
       .then((response) => {
-        resolve(response.data);
+        resolve(response.data.count);
       })
       .catch((error) => {
         reject(error);
