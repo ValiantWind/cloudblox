@@ -22,12 +22,17 @@ export type ClientEmailDetails = {
   canBypassPasswordForEmailUpdate: boolean;
 };
 
+export type ClientAppChatPrivacy = string;
+export type ClientGameChatPrivacy = string;
+export type ClientInventoryPrivacy = string;
+export type ClientPrivateMessagePrivacy = string;
+
 type BaseAccountSettings = {
   GetMetaData(): Promise<AccountSettingsMetaData>;
-  GetClientAppChatPrivacy(): Promise<string>;
-  GetClientGameChatPrivacy(): Promise<string>;
-  GetClientInventoryPrivacy(): Promise<string>;
-  GetClientPrivateMessagePrivacy(): Promise<string>;
+  GetClientAppChatPrivacy(): Promise<ClientAppChatPrivacy>;
+  GetClientGameChatPrivacy(): Promise<ClientGameChatPrivacy>;
+  GetClientInventoryPrivacy(): Promise<ClientInventoryPrivacy>;
+  GetClientPrivateMessagePrivacy(): Promise<ClientPrivateMessagePrivacy>;
   GetClientEmailDetails(): Promise<ClientEmailDetails>;
   GetClientBlockedUsers(): Promise<ClientBlockedUsers>;
   BlockUser(UserId: number): Promise<void>;
@@ -59,7 +64,7 @@ function GetMetaData(): Promise<AccountSettingsMetaData> {
   });
 }
 
-function GetClientAppChatPrivacy(): Promise<string> {
+function GetClientAppChatPrivacy(): Promise<ClientAppChatPrivacy> {
   return new Promise((resolve, reject) => {
     if (!axios.defaults.headers.common[`Cookie`]) {
       Promise.reject(new Error('No cookie has been set.'));
@@ -75,7 +80,7 @@ function GetClientAppChatPrivacy(): Promise<string> {
   });
 }
 
-function GetClientGameChatPrivacy(): Promise<string> {
+function GetClientGameChatPrivacy(): Promise<ClientGameChatPrivacy> {
   return new Promise((resolve, reject) => {
     if (!axios.defaults.headers.common[`Cookie`]) {
       Promise.reject(new Error('No cookie has been set.'));
@@ -91,7 +96,7 @@ function GetClientGameChatPrivacy(): Promise<string> {
   });
 }
 
-function GetClientInventoryPrivacy(): Promise<string> {
+function GetClientInventoryPrivacy(): Promise<ClientInventoryPrivacy> {
   return new Promise((resolve, reject) => {
     if (!axios.defaults.headers.common[`Cookie`]) {
       Promise.reject(new Error('No cookie has been set.'));
@@ -107,7 +112,7 @@ function GetClientInventoryPrivacy(): Promise<string> {
   });
 }
 
-function GetClientPrivateMessagePrivacy(): Promise<string> {
+function GetClientPrivateMessagePrivacy(): Promise<ClientPrivateMessagePrivacy> {
   return new Promise((resolve, reject) => {
     if (!axios.defaults.headers.common[`Cookie`]) {
       Promise.reject(new Error('No cookie has been set.'));

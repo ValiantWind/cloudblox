@@ -79,26 +79,24 @@ export type MultiBundleDetails = {
 };
 
 export type BundleRecommendations = {
-  data: {
+  id: number;
+  name: string;
+  description: string;
+  bundleType: string;
+  items: {
+    owned: boolean;
     id: number;
     name: string;
-    description: string;
-    bundleType: string;
-    items: {
-      owned: boolean;
-      id: number;
-      name: string;
-      type: string;
-    }[];
-    creator: {
-      id: number;
-      name: string;
-      type: string;
-      hasVerifiedBadge: boolean;
-    };
-    product: ProductDetails;
+    type: string;
   }[];
-};
+  creator: {
+    id: number;
+    name: string;
+    type: string;
+    hasVerifiedBadge: boolean;
+  };
+  product: ProductDetails;
+}[];
 
 export type AppStoreExclusiveBundles = {
   data: ProductDetails[];
@@ -113,9 +111,12 @@ export type SubCategories = AssetToCategory;
 export type UserBundles = BundleDetails;
 export type UserBundlesByType = UserBundles;
 
+export type AssetFavoriteCount = number;
+export type BundleFavoriteCount = number;
+
 type BaseCatalog = {
-  GetAssetFavoriteCount(AssetId: number): Promise<number>;
-  GetBundleFavoriteCount(BundleId: number): Promise<number>;
+  GetAssetFavoriteCount(AssetId: number): Promise<AssetFavoriteCount>;
+  GetBundleFavoriteCount(BundleId: number): Promise<BundleFavoriteCount>;
   GetAssetBundles(
     AssetId: number,
     sortOrder?: 'Asc' | 'Desc',
@@ -129,7 +130,7 @@ type BaseCatalog = {
     UserId: number,
     bundleType: 'BodyParts' | 'AvatarAnimations' | string,
   ): Promise<UserBundlesByType>;
-  GetBundleRecommendationsByBundleId(BundleId: number): Promise<BundleRecommendations>;
+  GetBundleRecommendationsById(BundleId: number): Promise<BundleRecommendations>;
   GetAppStoreExclusiveBundles(
     appStoreType: 'iOS' | 'GooglePlay' | 'Xbox' | 'Amazon',
   ): Promise<AppStoreExclusiveBundles>;
@@ -147,7 +148,7 @@ const Catalog: BaseCatalog = {
   GetMultiBundleDetails,
   GetUserBundles,
   GetUserBundlesByType,
-  GetBundleRecommendationsByBundleId,
+  GetBundleRecommendationsById,
   GetAppStoreExclusiveBundles,
   GetAssetToCategory,
   GetAssetToSubCategory,
@@ -155,7 +156,7 @@ const Catalog: BaseCatalog = {
   GetSubCategories,
 };
 
-function GetAssetFavoriteCount(AssetId: number): Promise<number> {
+function GetAssetFavoriteCount(AssetId: number): Promise<AssetFavoriteCount> {
   return new Promise((resolve, reject) => {
     axios
       .get(`https://catalog.roblox.com/v1/favorites/assets/${AssetId}/count`)
@@ -168,7 +169,7 @@ function GetAssetFavoriteCount(AssetId: number): Promise<number> {
   });
 }
 
-function GetBundleFavoriteCount(BundleId: number): Promise<number> {
+function GetBundleFavoriteCount(BundleId: number): Promise<BundleFavoriteCount> {
   return new Promise((resolve, reject) => {
     axios
       .get(`https://catalog.roblox.com/v1/favorites/bundles/${BundleId}/count`)
@@ -282,7 +283,7 @@ function GetMultiBundleDetails(BundleIds: number[]): Promise<MultiBundleDetails>
     axios
       .get(`https://catalog.roblox.com/v1/bundles/details?bundleIds=${BundleIds.join(',')}`)
       .then((response) => {
-        resolve(response.data);
+        resolve(response.data.data);
       })
       .catch((error) => {
         reject(new Error(error));
@@ -319,12 +320,12 @@ function GetUserBundlesByType(
   });
 }
 
-function GetBundleRecommendationsByBundleId(BundleId: number): Promise<BundleRecommendations> {
+function GetBundleRecommendationsById(BundleId: number): Promise<BundleRecommendations> {
   return new Promise((resolve, reject) => {
     axios
-      .get(`https://catalog.roblox.com/v1/assets/${BundleId}/recommendations`)
+      .get(`https://catalog.roblox.com/v1/bundles/${BundleId}/recommendations`)
       .then((response) => {
-        resolve(response.data);
+        resolve(response.data.data);
       })
       .catch((error) => {
         reject(new Error(error));
@@ -339,7 +340,7 @@ function GetAppStoreExclusiveBundles(
     axios
       .get(`https://catalog.roblox.com/v1/exclusive-items/${appStoreType}/bundles`)
       .then((response) => {
-        resolve(response.data);
+        resolve(response.data.data);
       })
       .catch((error) => {
         reject(new Error(error));

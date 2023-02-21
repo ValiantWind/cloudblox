@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 export type UserInfo = {
   description: string;
@@ -28,10 +28,12 @@ export type ClientAgeBracket = number;
 
 export type ClientCountryCode = string;
 
+export type UserIdFromName = number;
+
 type BaseUser = {
   SetClientDisplayName(DisplayName: string): Promise<void>;
   GetUserInfo(UserId: number): Promise<UserInfo>;
-  GetIdFromUsername(Username: string): Promise<number>;
+  GetIdFromUsername(Username: string): Promise<UserIdFromName>;
   GetClientUserInfo(): Promise<ClientUserInfo>;
   GetUsernameHistory(
     UserId: number,
@@ -80,7 +82,7 @@ function GetUserInfo(UserId: number): Promise<UserInfo> {
   });
 }
 
-function GetIdFromUsername(Username: string): Promise<number> {
+function GetIdFromUsername(Username: string): Promise<UserIdFromName> {
   return new Promise((resolve, reject) => {
     axios
       .post(`https://users.roblox.com/v1/usernames/users`, {

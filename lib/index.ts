@@ -3,7 +3,9 @@ import AccountSettings from './apis/AccountSettings';
 import Avatar from './apis/Avatar';
 import Badges from './apis/Badges';
 import Catalog from './apis/Catalog';
+import Contacts from './apis/Contacts';
 import Develop from './apis/Develop';
+import Economy from './apis/Economy';
 import Friends from './apis/Friends';
 import Games from './apis/Games';
 import Groups from './apis/Groups';
@@ -13,6 +15,7 @@ import Thumbnails from './apis/Thumbnails';
 import Users from './apis/Users';
 import MessagingService from './OpenCloud/MessagingService';
 import PlacePublishing from './OpenCloud/PlacePublishing';
+import DataStoreService from './OpenCloud/DataStoreService';
 
 export {
   AccountInformation,
@@ -20,7 +23,9 @@ export {
   Avatar,
   Badges,
   Catalog,
+  Contacts,
   Develop,
+  Economy,
   Friends,
   Games,
   Groups,
@@ -30,6 +35,7 @@ export {
   Users,
   MessagingService,
   PlacePublishing,
+  DataStoreService,
 };
 
 export { default as Client } from './client';
