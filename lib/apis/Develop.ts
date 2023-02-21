@@ -52,12 +52,74 @@ export type UniverseInfo = {
   updated: Date;
 };
 
+export type UniverseConfigOptions = {
+  allowPrivateServers: boolean;
+  privateServerPrice: number;
+  name: string;
+  description: string;
+  universeAvatarType: string;
+  universeAnimationType: string;
+  universeCollisionType: string;
+  universeJointPositioningType: string;
+  isArchived: boolean;
+  isFriendsOnly: boolean;
+  genre: string;
+  playableDevices: string[];
+  isForSale: boolean;
+  price: number;
+  universeAvatarAssetOverrides: {
+    assetID: number;
+    assetTypeID: number;
+    isPlayerChoice: boolean;
+  }[];
+  universeAvatarMinScales: {
+    height: number;
+    width: number;
+    head: number;
+    depth: number;
+    proportion: number;
+    bodyType: number;
+  };
+  studioAccessToApisAllowed: boolean;
+  permissions: {
+    IsThirdPartyTeleportAllowed: boolean;
+    IsThirdPartyAssetAllowed: boolean;
+    IsThirdPartyPurchaseAllowed: boolean;
+  };
+  optInRegions: string[];
+  optOutRegions: string[];
+};
+
 export type CanManage = {
   Success: boolean;
   CanManage: boolean;
 };
 
 export type UniverseIdFromPlaceId = number;
+
+export type AssetVotingInfo = {
+  assetId: number;
+  hasUserVoted: boolean;
+  canUserVote: boolean;
+  shouldShowVotes: boolean;
+  upVotes: number;
+  downVotes: number;
+  reasonForNotAbleToVote: string;
+};
+
+export type GameUpdateNotifications = {
+  universeId: number;
+  createdOn: Date;
+  createdOnKey: string;
+  creatorType: string;
+  creatorId: number;
+  creatorName: string;
+  expiredOn: Date;
+  content: string;
+  impressions: number;
+  plays: number;
+  unfollows: number;
+};
 
 type BaseDevelop = {
   GetPlaceConfig(PlaceId: number): Promise<PlaceConfiguration>;
@@ -66,6 +128,8 @@ type BaseDevelop = {
   GetUniverseInfo(UniverseId: number): Promise<UniverseInfo>;
   CanManageAsset(UserId: number, AssetId: number): Promise<CanManage>;
   GetUniverseIdFromPlaceId(PlaceId: number): Promise<UniverseIdFromPlaceId>;
+  GetAssetVotingInfo(AssetIds: number[]): Promise<AssetVotingInfo[]>;
+  GetGameUpdates(UniverseId: number): Promise<GameUpdateNotifications[]>;
 };
 
 const Develop: BaseDevelop = {
@@ -75,6 +139,8 @@ const Develop: BaseDevelop = {
   GetUniverseInfo,
   CanManageAsset,
   GetUniverseIdFromPlaceId,
+  GetAssetVotingInfo,
+  GetGameUpdates,
 };
 
 function GetPlaceConfig(PlaceId: number): Promise<PlaceConfiguration> {
@@ -148,6 +214,32 @@ function GetUniverseIdFromPlaceId(PlaceId: number): Promise<UniverseIdFromPlaceI
       .get(`https://apis.roblox.com/universes/v1/places/${PlaceId}/universe`)
       .then((response) => {
         resolve(response.data.universeId);
+      })
+      .catch((error) => {
+        reject(new Error(error));
+      });
+  });
+}
+
+function GetAssetVotingInfo(AssetIds: number[]): Promise<AssetVotingInfo[]> {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`https://develop.roblox.com/v1/assets/voting?assetIds=${AssetIds.join(',')}`)
+      .then((response) => {
+        resolve(response.data.data);
+      })
+      .catch((error) => {
+        reject(new Error(error));
+      });
+  });
+}
+
+function GetGameUpdates(UniverseId: number): Promise<GameUpdateNotifications[]> {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`https://develop.roblox.com/v1/gameUpdateNotifications/${UniverseId}`)
+      .then((response) => {
+        resolve(response.data);
       })
       .catch((error) => {
         reject(new Error(error));

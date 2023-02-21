@@ -63,13 +63,17 @@ export type VerifiedUserHatAssetId = {
   verifiedUserHatAssetId: number;
 };
 
+export type ClientDescription = string;
+export type ClientGender = string;
+
 type BaseAccountInfo = {
   GetClientBirthdate(): Promise<ClientBirthdate>;
   UpdateClientBirthdate(birthMonth: number, birthDay: number, birthYear: number, clientPassword: string): Promise<void>;
-  GetClientDescription(): Promise<string>;
+  GetClientDescription(): Promise<ClientDescription>;
   SetClientDescription(description: string): Promise<void>;
-  GetClientGender(): Promise<string>;
+  GetClientGender(): Promise<ClientGender>;
   SetClientGender(gender: string): Promise<void>;
+  GetClientXboxLoginStreak(): Promise<ClientXboxLoginStreakInDays>;
   GetMetaData(): Promise<AccountInfoMetaData>;
   GetClientPhoneInfo(): Promise<ClientPhoneInformation>;
   SetClientPhoneInfo(CountryCode: string, prefix: string, PhoneNumber: string, password: string): Promise<void>;
@@ -100,6 +104,7 @@ const AccountInformation: BaseAccountInfo = {
   SetClientDescription,
   GetClientGender,
   SetClientGender,
+  GetClientXboxLoginStreak,
   GetMetaData,
   GetClientPhoneInfo,
   SetClientPhoneInfo,
@@ -153,7 +158,7 @@ async function UpdateClientBirthdate(
     });
 }
 
-function GetClientDescription(): Promise<string> {
+function GetClientDescription(): Promise<ClientDescription> {
   return new Promise((resolve, reject) => {
     if (!axios.defaults.headers.common[`Cookie`]) {
       reject(new Error('No cookie has been set.'));
@@ -182,7 +187,7 @@ async function SetClientDescription(description: string): Promise<void> {
     });
 }
 
-function GetClientGender(): Promise<string> {
+function GetClientGender(): Promise<ClientGender> {
   return new Promise((resolve, reject) => {
     if (!axios.defaults.headers.common[`Cookie`]) {
       reject(new Error('No cookie has been set.'));

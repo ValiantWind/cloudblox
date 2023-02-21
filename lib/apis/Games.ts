@@ -132,7 +132,60 @@ export type GamePlayabilityStatus = {
   universeId: number;
 };
 
+export type GameSortList = {
+  sorts: {
+    token: string;
+    name: string;
+    displayName: string;
+    gameSetTypeId: number;
+    gameSetTargetId: number;
+    timeOptionsAvailable: boolean;
+    genreOptionsAvailable: boolean;
+    numberOfRows: number;
+    numberOfGames: number;
+    isDefaultSort: boolean;
+    contextUniverseId: number;
+    contextCountryRegionId: number;
+    tokenExpiryInSeconds: number;
+  }[];
+  timeFilters: {
+    token: string;
+    name: string;
+    tokenExpiryInSeconds: number;
+  }[];
+  gameFilters: {
+    token: string;
+    name: string;
+    tokenExpiryInSeconds: number;
+  }[];
+  genreFilters: {
+    token: string;
+    name: string;
+    tokenExpiryInSeconds: number;
+  }[];
+  pageContext: {
+    pageId: string;
+    isSeeAllPage: boolean;
+  }[];
+  gameSortStyle: string;
+};
+
 export type GameFavoriteCount = number;
+
+export type GameGamePasses = {
+  previousPageCursor: string;
+  nextPageCursor: string;
+  data: {
+    id: number;
+    name: string;
+    displayName: string;
+    productId: number;
+    price: number;
+    sellerName: string;
+    sellerId: number;
+    isOwned: boolean;
+  }[];
+};
 
 export type PrivateServersEnabled = boolean;
 
@@ -152,6 +205,32 @@ export type MultiGameVotes = {
   }[];
 };
 
+export type MultiPrivateServers = {
+  privateServerResponses: {
+    id: string;
+    maxPlayers: number;
+    playing: number;
+    playerTokens: string[];
+    players: {
+      playerToken: string;
+      id: number;
+      name: string;
+      displayName: string;
+    }[];
+    fps: number;
+    ping: number;
+    name: string;
+    vipServerId: number;
+    accessCode: string;
+    owner: {
+      hasVerifiedBadge: boolean;
+      id: number;
+      name: string;
+      displayName: string;
+    };
+  }[];
+};
+
 type BaseGames = {
   GetMediaData(UniverseId: number): Promise<GameMediaData>;
   MultiGetGameDetails(UniverseIds: number[]): Promise<MultiGameDetails>;
@@ -165,6 +244,13 @@ type BaseGames = {
   GetClientVoteStatus(UniverseId: number): Promise<ClientVoteStatus>;
   MultiGetGameVotes(UniverseIds: number[]): Promise<MultiGameVotes>;
   VoteGame(UniverseId: number, vote: boolean): Promise<void>;
+  MultiGetPrivateServers(PrivateServerIds: number[]): Promise<MultiPrivateServers>;
+  GetGamePasses(
+    UniverseId: number,
+    sortOrder?: 'Asc' | 'Desc',
+    limit?: 10 | 25 | 50 | 100,
+    cursor?: string,
+  ): Promise<GameGamePasses>;
 };
 
 const Games: BaseGames = {
@@ -180,6 +266,8 @@ const Games: BaseGames = {
   GetClientVoteStatus,
   MultiGetGameVotes,
   VoteGame,
+  MultiGetPrivateServers,
+  GetGamePasses,
 };
 
 function GetMediaData(UniverseId: number): Promise<GameMediaData> {
@@ -263,6 +351,19 @@ function MultiGetGamePlayabilityStatus(UniverseIds: number[]): Promise<GamePlaya
   });
 }
 
+function GetGameSorts(SortsContext: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7): Promise<GameSortList> {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`https://games.roblox.com/v1/games/sorts?GameSortsContext=${SortsContext}`)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch((error) => {
+        reject(new Error(error));
+      });
+  });
+}
+
 function GetFavoriteCount(UniverseId: number): Promise<GameFavoriteCount> {
   return new Promise((resolve, reject) => {
     axios
@@ -273,6 +374,92 @@ function GetFavoriteCount(UniverseId: number): Promise<GameFavoriteCount> {
       .catch((error) => {
         reject(new Error(error));
       });
+  });
+}
+
+function GetGamePasses(
+  UniverseId: number,
+  sortOrder?: 'Asc' | 'Desc',
+  limit?: 10 | 25 | 50 | 100,
+  cursor?: string,
+): Promise<GameGamePasses> {
+  return new Promise((resolve, reject) => {
+    if (!sortOrder && !limit && !cursor) {
+      axios
+        .get(`https://games.roblox.com/v1/games/${UniverseId}/game-passes`)
+
+        .then((response) => {
+          resolve(response.data);
+        })
+        .catch((error) => {
+          reject(new Error(error));
+        });
+    } else if (!sortOrder && !limit) {
+      axios
+        .get(`https://games.roblox.com/v1/games/${UniverseId}/game-passes?cursor=${cursor}`)
+        .then((response) => {
+          resolve(response.data);
+        })
+        .catch((error) => {
+          reject(new Error(error));
+        });
+    } else if (!sortOrder && !cursor) {
+      axios
+        .get(`https://games.roblox.com/v1/games/${UniverseId}/game-passes?limit=${limit}`)
+        .then((response) => {
+          resolve(response.data);
+        })
+        .catch((error) => {
+          reject(new Error(error));
+        });
+    } else if (!limit && !cursor) {
+      axios
+        .get(`https://games.roblox.com/v1/games/${UniverseId}/game-passes?sortOrder=${sortOrder}`)
+        .then((response) => {
+          resolve(response.data);
+        })
+        .catch((error) => {
+          reject(new Error(error));
+        });
+    } else if (!sortOrder) {
+      axios
+        .get(`https://games.roblox.com/v1/games/${UniverseId}/game-passes?limit=${limit}&cursor=${cursor}`)
+        .then((response) => {
+          resolve(response.data);
+        })
+        .catch((error) => {
+          reject(new Error(error));
+        });
+    } else if (!limit) {
+      axios
+        .get(`https://games.roblox.com/v1/games/${UniverseId}/game-passes?sortOrder=${sortOrder}&cursor=${cursor}`)
+        .then((response) => {
+          resolve(response.data);
+        })
+        .catch((error) => {
+          reject(new Error(error));
+        });
+    } else if (!cursor) {
+      axios
+        .get(`https://games.roblox.com/v1/games/${UniverseId}/game-passes?sortOrder=${sortOrder}&limit=${limit}`)
+        .then((response) => {
+          resolve(response.data);
+        })
+        .catch((error) => {
+          reject(new Error(error));
+        });
+    } else {
+      axios
+        .get(
+          `https://games.roblox.com/v1/games/${UniverseId}/game-passes?sortOrder=${sortOrder}&limit=${limit}&cursor=${cursor}`,
+        )
+        .then((response) => {
+          resolve(response.data);
+        })
+        .catch((error) => {
+          reject(new Error(error));
+        });
+    }
   });
 }
 
@@ -354,6 +541,19 @@ async function VoteGame(UniverseId: number, vote: boolean): Promise<void> {
     .catch((error) => {
       Promise.reject(new Error(error));
     });
+}
+
+function MultiGetPrivateServers(PrivateServerIds: number[]): Promise<MultiPrivateServers> {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`https://games.roblox.com/v1/private-servers?privateServerIds=${PrivateServerIds.join(',')}`)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch((error) => {
+        reject(new Error(error));
+      });
+  });
 }
 
 export default Games;

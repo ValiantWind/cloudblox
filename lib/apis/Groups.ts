@@ -242,6 +242,8 @@ export type GroupSearchMetaData = {
   ShowFriendsGroupsSort: boolean;
 };
 
+export type GroupFunds = number;
+
 type BaseGroup = {
   MultiGetGroupInfo(GroupIds: number[]): Promise<MultiGroupInfo>;
   GetGroupInfo(GroupId: number): Promise<GroupInfo>;
@@ -272,6 +274,7 @@ type BaseGroup = {
   ChangeGroupOwner(GroupId: number, UserId: number): Promise<void>;
   ClaimGroupOwnership(GroupId: number): Promise<void>;
   GetSearchMetaData(): Promise<GroupSearchMetaData>;
+  GetGroupFunds(GroupId: number): Promise<GroupFunds>;
 };
 const Groups: BaseGroup = {
   MultiGetGroupInfo,
@@ -293,6 +296,7 @@ const Groups: BaseGroup = {
   ChangeGroupOwner,
   ClaimGroupOwnership,
   GetSearchMetaData,
+  GetGroupFunds,
 };
 
 function MultiGetGroupInfo(GroupIds: number[]): Promise<MultiGroupInfo> {
@@ -678,6 +682,19 @@ function GetSearchMetaData(): Promise<GroupSearchMetaData> {
       .get(`https://groups.roblox.com/v1/groups/search/metadata`)
       .then((response) => {
         resolve(response.data);
+      })
+      .catch((error) => {
+        reject(new Error(error));
+      });
+  });
+}
+
+function GetGroupFunds(GroupId: number): Promise<GroupFunds> {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`https://economy.roblox.com/v1/groups/${GroupId}/currency`)
+      .then((response) => {
+        resolve(response.data.robux);
       })
       .catch((error) => {
         reject(new Error(error));

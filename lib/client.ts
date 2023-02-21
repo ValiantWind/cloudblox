@@ -64,6 +64,7 @@ interface Config {
   MessagingService?: string;
   Assets?: string;
   PlacePublishing?: string;
+  DataStoreService?: string;
 }
 
 const config: Config = {};
@@ -74,18 +75,21 @@ export default class Client {
     MessagingService,
     Assets,
     PlacePublishing,
+    DataStoreService,
     Cookie,
   }: {
     UniverseId?: number;
     MessagingService?: string;
     Assets?: string;
     PlacePublishing?: string;
+    DataStoreService?: string;
     Cookie?: string;
   } = {}) {
     config.UniverseId = UniverseId;
     config.MessagingService = MessagingService;
     config.Assets = Assets;
     config.PlacePublishing = PlacePublishing;
+    config.DataStoreService = DataStoreService;
     axios.defaults.headers.common[`Cookie`] = `.ROBLOSECURITY=${Cookie}`;
   }
 

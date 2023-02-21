@@ -15,7 +15,7 @@ async function PublishAsync(topic: string, message: string): Promise<void> {
   const MSApiKey = config.MessagingService;
 
   if (!UniverseId) {
-    Promise.reject(new Error('UniverseId is not set'));
+    Promise.reject(new Error('No UniverseId has been set'));
   }
 
   if (!MSApiKey) {
