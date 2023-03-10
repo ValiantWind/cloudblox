@@ -31,7 +31,7 @@ export {
     Contacts,
     Develop,
     Economy,
-		Followings,
+	  Followings,
     Friends,
     Games,
     Groups,
