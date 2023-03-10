@@ -1,6 +1,7 @@
 import axios from "axios";
+import { Games, Avatar, Badges, Catalog, Develop, Groups, Thumbnails, Users, Auth } from "../dist/index";
 
-import { Games, Avatar, Badges, Catalog, Develop, Groups, Thumbnails, Users } from "../dist/index";
+import request from "../lib/request";
 
 const universeId = 3234769652;
 const universeIdArr = [3234769652];
@@ -12,9 +13,8 @@ const bundleId = 43
 const bundleIdArr = [43];
 
 async function test(){
-	const info = await Users.GetUserInfo(userId)
+	const info = await Auth.getAuthMetaData()
 	console.log(info)
 }
-
 
 test()
