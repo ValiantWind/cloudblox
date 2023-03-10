@@ -1,105 +1,111 @@
-import axios from 'axios';
+import axios from "axios";
 
 export type ProductDetails = {
-  id: number;
-  type: string;
-  isPublicDomain: boolean;
-  isForSale: boolean;
-  priceInRobux: number;
-  premiumPricing: {
-    premiumDiscountPercentage: number;
-    premiumPriceInRobux: number;
-  };
+    id: number;
+    type: string;
+    isPublicDomain: boolean;
+    isForSale: boolean;
+    priceInRobux: number;
+    premiumPricing: {
+        premiumDiscountPercentage: number;
+        premiumPriceInRobux: number;
+    };
 };
 
 export type AssetBundles = {
-  previousPageCursor: string;
-  nextPageCursor: string;
-  data: {
-    id: number;
-    name: string;
-    description: string;
-    bundleType: string;
-    items: {
-      owned: boolean;
-      id: number;
-      name: string;
-      type: string;
+    previousPageCursor: string;
+    nextPageCursor: string;
+    data: {
+        id: number;
+        name: string;
+        description: string;
+        bundleType: string;
+        items: {
+            owned: boolean;
+            id: number;
+            name: string;
+            type: string;
+        }[];
+        creator: {
+            id: number;
+            name: string;
+            type: string;
+            hasVerifiedBadge: boolean;
+        };
+        product: ProductDetails;
     }[];
-    creator: {
-      id: number;
-      name: string;
-      type: string;
-      hasVerifiedBadge: boolean;
-    };
-    product: ProductDetails;
-  }[];
 };
 
 export type BundleDetails = {
-  id: number;
-  name: string;
-  description: string;
-  bundleType: string;
-  items: {
-    owned: boolean;
-    id: number;
-    name: string;
-    type: string;
-  }[];
-  creator: {
-    id: number;
-    name: string;
-    type: string;
-    hasVerifiedBadge: boolean;
-  };
-  product: ProductDetails;
-};
-
-export type MultiBundleDetails = {
-  data: {
     id: number;
     name: string;
     description: string;
     bundleType: string;
     items: {
-      owned: boolean;
-      id: number;
-      name: string;
-      type: string;
+        owned: boolean;
+        id: number;
+        name: string;
+        type: string;
     }[];
     creator: {
-      id: number;
-      name: string;
-      type: string;
-      hasVerifiedBadge: boolean;
+        id: number;
+        name: string;
+        type: string;
+        hasVerifiedBadge: boolean;
     };
     product: ProductDetails;
-  }[];
+};
+
+export type MultiBundleDetails = {
+    data: {
+        id: number;
+        name: string;
+        description: string;
+        bundleType: string;
+        items: {
+            owned: boolean;
+            id: number;
+            name: string;
+            type: string;
+        }[];
+        creator: {
+            id: number;
+            name: string;
+            type: string;
+            hasVerifiedBadge: boolean;
+        };
+        product: ProductDetails;
+    }[];
 };
 
 export type BundleRecommendations = {
-  id: number;
-  name: string;
-  description: string;
-  bundleType: string;
-  items: {
-    owned: boolean;
     id: number;
     name: string;
-    type: string;
-  }[];
-  creator: {
-    id: number;
-    name: string;
-    type: string;
-    hasVerifiedBadge: boolean;
-  };
-  product: ProductDetails;
+    description: string;
+    bundleType: string;
+    items: {
+        owned: boolean;
+        id: number;
+        name: string;
+        type: string;
+    }[];
+    creator: {
+        id: number;
+        name: string;
+        type: string;
+        hasVerifiedBadge: boolean;
+    };
+    product: ProductDetails;
 }[];
 
 export type AppStoreExclusiveBundles = {
-  data: ProductDetails[];
+    data: ProductDetails[];
+};
+
+export type UserAssetFavoriteModel = {
+    assetId: number;
+    userId: number;
+    created: Date;
 };
 
 export type AssetToCategory = Record<string, number>;
@@ -115,289 +121,357 @@ export type AssetFavoriteCount = number;
 export type BundleFavoriteCount = number;
 
 type BaseCatalog = {
-  GetAssetFavoriteCount(AssetId: number): Promise<AssetFavoriteCount>;
-  GetBundleFavoriteCount(BundleId: number): Promise<BundleFavoriteCount>;
-  GetAssetBundles(
-    AssetId: number,
-    sortOrder?: 'Asc' | 'Desc',
-    limit?: 10 | 25 | 50 | 100,
-    cursor?: string,
-  ): Promise<AssetBundles>;
-  GetBundleDetails(BundleId: number): Promise<BundleDetails>;
-  GetMultiBundleDetails(BundleIds: number[]): Promise<MultiBundleDetails>;
-  GetUserBundles(UserId: number): Promise<UserBundles>;
-  GetUserBundlesByType(
-    UserId: number,
-    bundleType: 'BodyParts' | 'AvatarAnimations' | string,
-  ): Promise<UserBundlesByType>;
-  GetBundleRecommendationsById(BundleId: number): Promise<BundleRecommendations>;
-  GetAppStoreExclusiveBundles(
-    appStoreType: 'iOS' | 'GooglePlay' | 'Xbox' | 'Amazon',
-  ): Promise<AppStoreExclusiveBundles>;
-  GetAssetToCategory(): Promise<AssetToCategory>;
-  GetAssetToSubCategory(): Promise<AssetToSubCategory>;
-  GetCategories(): Promise<Categories>;
-  GetSubCategories(): Promise<SubCategories>;
+    getAssetFavoriteCount(AssetId: number): Promise<AssetFavoriteCount>;
+    getBundleFavoriteCount(BundleId: number): Promise<BundleFavoriteCount>;
+    getAssetBundles(
+        AssetId: number,
+        sortOrder?: "Asc" | "Desc",
+        limit?: 10 | 25 | 50 | 100,
+        cursor?: string,
+    ): Promise<AssetBundles>;
+    getBundleDetails(BundleId: number): Promise<BundleDetails>;
+    getMultiBundleDetails(BundleIds: number[]): Promise<MultiBundleDetails>;
+    getUserBundles(UserId: number): Promise<UserBundles>;
+    getUserBundlesByType(
+        UserId: number,
+        bundleType: "BodyParts" | "AvatarAnimations" | string,
+        limit: number,
+        cursor: string,
+        sortOrder: "Desc" | "Asc",
+    ): Promise<UserBundlesByType>;
+    getBundleRecommendationsById(BundleId: number): Promise<BundleRecommendations>;
+    getAppStoreExclusiveBundles(
+        appStoreType: "iOS" | "GooglePlay" | "Xbox" | "Amazon",
+    ): Promise<AppStoreExclusiveBundles>;
+    getAssetToCategory(): Promise<AssetToCategory>;
+    getAssetToSubCategory(): Promise<AssetToSubCategory>;
+    getCategories(): Promise<Categories>;
+    getSubCategories(): Promise<SubCategories>;
+    favoriteAsset(UserId: number, AssetId: number): Promise<void>;
+    unfavoriteAsset(UserId: number, AssetId: number): Promise<void>;
+    unpackBundle(BundleId: number): Promise<void>;
+    favoriteBundle(UserId: number, BundleId: number): Promise<void>;
+    unfavoriteBundle(UserId: number, BundleId: number): Promise<void>;
+    getUserAssetFavoriteModel(UserId: number, AssetId: number): Promise<UserAssetFavoriteModel>;
+    getUserBundleFavoriteModel(UserId: number, BundleId: number): Promise<UserAssetFavoriteModel>;
 };
 
 const Catalog: BaseCatalog = {
-  GetAssetFavoriteCount,
-  GetBundleFavoriteCount,
-  GetAssetBundles,
-  GetBundleDetails,
-  GetMultiBundleDetails,
-  GetUserBundles,
-  GetUserBundlesByType,
-  GetBundleRecommendationsById,
-  GetAppStoreExclusiveBundles,
-  GetAssetToCategory,
-  GetAssetToSubCategory,
-  GetCategories,
-  GetSubCategories,
+    getAssetFavoriteCount,
+    getBundleFavoriteCount,
+    getAssetBundles,
+    getBundleDetails,
+    getMultiBundleDetails,
+    getUserBundles,
+    getUserBundlesByType,
+    getBundleRecommendationsById,
+    getAppStoreExclusiveBundles,
+    getAssetToCategory,
+    getAssetToSubCategory,
+    getCategories,
+    getSubCategories,
+    favoriteAsset,
+    unfavoriteAsset,
+    unpackBundle,
+    favoriteBundle,
+    unfavoriteBundle,
+    getUserAssetFavoriteModel,
+    getUserBundleFavoriteModel
 };
 
-function GetAssetFavoriteCount(AssetId: number): Promise<AssetFavoriteCount> {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(`https://catalog.roblox.com/v1/favorites/assets/${AssetId}/count`)
-      .then((response) => {
-        resolve(response.data);
-      })
-      .catch((error) => {
-        reject(new Error(error));
-      });
-  });
+function getAssetFavoriteCount (AssetId: number): Promise<AssetFavoriteCount> {
+    return new Promise((resolve, reject) => {
+        axios
+            .get(`https://catalog.roblox.com/v1/favorites/assets/${AssetId}/count`)
+            .then(response => {
+                resolve(response.data);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
 }
 
-function GetBundleFavoriteCount(BundleId: number): Promise<BundleFavoriteCount> {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(`https://catalog.roblox.com/v1/favorites/bundles/${BundleId}/count`)
-      .then((response) => {
-        resolve(response.data);
-      })
-      .catch((error) => {
-        reject(new Error(error));
-      });
-  });
+function getBundleFavoriteCount (BundleId: number): Promise<BundleFavoriteCount> {
+    return new Promise((resolve, reject) => {
+        axios
+            .get(`https://catalog.roblox.com/v1/favorites/bundles/${BundleId}/count`)
+            .then(response => {
+                resolve(response.data);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
 }
 
-function GetAssetBundles(
-  AssetId: number,
-  sortOrder?: 'Asc' | 'Desc',
-  limit?: 10 | 25 | 50 | 100,
-  cursor?: string,
+function getAssetBundles (
+    AssetId: number,
+    sortOrder?: "Asc" | "Desc",
+    limit?: 10 | 25 | 50 | 100,
+    cursor?: string,
 ): Promise<AssetBundles> {
-  return new Promise((resolve, reject) => {
-    if (!sortOrder && !limit && !cursor) {
-      axios
-        .get(`https://catalog.roblox.com/v1/assets/${AssetId}`)
-        .then((response) => {
-          resolve(response.data);
-        })
-        .catch((error) => {
-          reject(new Error(error));
-        });
-    } else if (!sortOrder && !limit) {
-      axios
-        .get(`https://catalog.roblox.com/v1/assets/${AssetId}?cursor=${cursor}`)
-        .then((response) => {
-          resolve(response.data);
-        })
-        .catch((error) => {
-          reject(new Error(error));
-        });
-    } else if (!sortOrder && !cursor) {
-      axios
-        .get(`https://catalog.roblox.com/v1/assets/${AssetId}?limit=${limit}`)
-        .then((response) => {
-          resolve(response.data);
-        })
-        .catch((error) => {
-          reject(new Error(error));
-        });
-    } else if (!limit && !cursor) {
-      axios
-        .get(`https://catalog.roblox.com/v1/assets/${AssetId}?sortOrder=${sortOrder}`)
-        .then((response) => {
-          resolve(response.data);
-        })
-        .catch((error) => {
-          reject(new Error(error));
-        });
-    } else if (!sortOrder) {
-      axios
-        .get(`https://catalog.roblox.com/v1/assets/${AssetId}?limit=${limit}&cursor=${cursor}`)
-        .then((response) => {
-          resolve(response.data);
-        })
-        .catch((error) => {
-          reject(new Error(error));
-        });
-    } else if (!limit) {
-      axios
-        .get(`https://catalog.roblox.com/v1/assets/${AssetId}?sortOrder=${sortOrder}&cursor=${cursor}`)
-        .then((response) => {
-          resolve(response.data);
-        })
-        .catch((error) => {
-          reject(new Error(error));
-        });
-    } else if (!cursor) {
-      axios
-        .get(`https://catalog.roblox.com/v1/assets/${AssetId}?sortOrder=${sortOrder}&limit=${limit}`)
-        .then((response) => {
-          resolve(response.data);
-        })
-        .catch((error) => {
-          reject(new Error(error));
-        });
-    } else {
-      axios
-        .get(`https://catalog.roblox.com/v1/assets/${AssetId}?sortOrder=${sortOrder}&limit=${limit}&cursor=${cursor}`)
-        .then((response) => {
-          resolve(response.data);
-        })
-        .catch((error) => {
-          reject(new Error(error));
-        });
-    }
-  });
+    return new Promise((resolve, reject) => {
+        if (!sortOrder) {
+            sortOrder = "Asc";
+        }
+        if (!limit) {
+            limit = 10;
+        }
+
+        const config = {
+            method: "get",
+            url: `https://catalog.roblox.com/v1/assets/${AssetId}/bundles`,
+            params: {
+                sortOrder,
+                limit,
+                cursor
+            }
+        };
+
+        axios(config)
+            .then(response => {
+                resolve(response.data);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
 }
 
-function GetBundleDetails(BundleId: number): Promise<BundleDetails> {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(`https://catalog.roblox.com/v1/bundles/${BundleId}/details`)
-      .then((response) => {
-        resolve(response.data);
-      })
-      .catch((error) => {
-        reject(new Error(error));
-      });
-  });
+function getBundleDetails (BundleId: number): Promise<BundleDetails> {
+    return new Promise((resolve, reject) => {
+        axios
+            .get(`https://catalog.roblox.com/v1/bundles/${BundleId}/details`)
+            .then(response => {
+                resolve(response.data);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
 }
 
-function GetMultiBundleDetails(BundleIds: number[]): Promise<MultiBundleDetails> {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(`https://catalog.roblox.com/v1/bundles/details?bundleIds=${BundleIds.join(',')}`)
-      .then((response) => {
-        resolve(response.data.data);
-      })
-      .catch((error) => {
-        reject(new Error(error));
-      });
-  });
+function getMultiBundleDetails (BundleIds: number[]): Promise<MultiBundleDetails> {
+    return new Promise((resolve, reject) => {
+        axios
+            .get(`https://catalog.roblox.com/v1/bundles/details?bundleIds=${BundleIds.join(",")}`)
+            .then(response => {
+                resolve(response.data.data);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
 }
 
-function GetUserBundles(UserId: number): Promise<UserBundles> {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(`https://catalog.roblox.com/v1/users/${UserId}/bundles`)
-      .then((response) => {
-        resolve(response.data);
-      })
-      .catch((error) => {
-        reject(new Error(error));
-      });
-  });
+function getUserBundles (UserId: number): Promise<UserBundles> {
+    return new Promise((resolve, reject) => {
+        axios
+            .get(`https://catalog.roblox.com/v1/users/${UserId}/bundles`)
+            .then(response => {
+                resolve(response.data);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
 }
 
-function GetUserBundlesByType(
-  UserId: number,
-  bundleType: 'BodyParts' | 'AvatarAnimations' | string,
+function getUserBundlesByType (
+    UserId: number,
+    bundleType: "BodyParts" | "AvatarAnimations" | string,
+    limit: number,
+    cursor: string,
+    sortOrder: "Asc" | "Desc",
 ): Promise<UserBundlesByType> {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(`https://catalog.roblox.com/v1/users/${UserId}/${bundleType}`)
-      .then((response) => {
-        resolve(response.data);
-      })
-      .catch((error) => {
-        reject(new Error(error));
-      });
-  });
+    return new Promise((resolve, reject) => {
+        if (!sortOrder) {
+            sortOrder = "Asc";
+        }
+        if (!limit) {
+            limit = 10;
+        }
+
+        const config = {
+            method: "get",
+            url: `https://catalog.roblox.com/v1/users/${UserId}/${bundleType}`,
+            params: {
+                limit,
+                cursor,
+                sortOrder
+            }
+        };
+
+        axios(config)
+            .then(response => {
+                resolve(response.data);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
 }
 
-function GetBundleRecommendationsById(BundleId: number): Promise<BundleRecommendations> {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(`https://catalog.roblox.com/v1/bundles/${BundleId}/recommendations`)
-      .then((response) => {
-        resolve(response.data.data);
-      })
-      .catch((error) => {
-        reject(new Error(error));
-      });
-  });
+function getBundleRecommendationsById (BundleId: number): Promise<BundleRecommendations> {
+    return new Promise((resolve, reject) => {
+        axios
+            .get(`https://catalog.roblox.com/v1/bundles/${BundleId}/recommendations`)
+            .then(response => {
+                resolve(response.data.data);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
 }
 
-function GetAppStoreExclusiveBundles(
-  appStoreType: 'iOS' | 'GooglePlay' | 'Xbox' | 'Amazon',
+function getAppStoreExclusiveBundles (
+    appStoreType: "iOS" | "GooglePlay" | "Xbox" | "Amazon",
 ): Promise<AppStoreExclusiveBundles> {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(`https://catalog.roblox.com/v1/exclusive-items/${appStoreType}/bundles`)
-      .then((response) => {
-        resolve(response.data.data);
-      })
-      .catch((error) => {
-        reject(new Error(error));
-      });
-  });
+    return new Promise((resolve, reject) => {
+        axios
+            .get(`https://catalog.roblox.com/v1/exclusive-items/${appStoreType}/bundles`)
+            .then(response => {
+                resolve(response.data.data);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
 }
 
-function GetAssetToCategory(): Promise<AssetToCategory> {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(`https://catalog.roblox.com/v1/asset-to-category`)
-      .then((response) => {
-        resolve(response.data);
-      })
-      .catch((error) => {
-        reject(new Error(error));
-      });
-  });
+function getAssetToCategory (): Promise<AssetToCategory> {
+    return new Promise((resolve, reject) => {
+        axios
+            .get(`https://catalog.roblox.com/v1/asset-to-category`)
+            .then(response => {
+                resolve(response.data);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
 }
 
-function GetAssetToSubCategory(): Promise<AssetToSubCategory> {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(`https://catalog.roblox.com/v1/asset-to-subcategory`)
-      .then((response) => {
-        resolve(response.data);
-      })
-      .catch((error) => {
-        reject(new Error(error));
-      });
-  });
+function getAssetToSubCategory (): Promise<AssetToSubCategory> {
+    return new Promise((resolve, reject) => {
+        axios
+            .get(`https://catalog.roblox.com/v1/asset-to-subcategory`)
+            .then(response => {
+                resolve(response.data);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
 }
 
-function GetCategories(): Promise<Categories> {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(`https://catalog.roblox.com/v1/categories`)
-      .then((response) => {
-        resolve(response.data);
-      })
-      .catch((error) => {
-        reject(new Error(error));
-      });
-  });
+function getCategories (): Promise<Categories> {
+    return new Promise((resolve, reject) => {
+        axios
+            .get(`https://catalog.roblox.com/v1/categories`)
+            .then(response => {
+                resolve(response.data);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
 }
 
-function GetSubCategories(): Promise<SubCategories> {
-  return new Promise((resolve, reject) => {
+function getSubCategories (): Promise<SubCategories> {
+    return new Promise((resolve, reject) => {
+        axios
+            .get(`https://catalog.roblox.com/v1/subcategories`)
+            .then(response => {
+                resolve(response.data);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+}
+
+async function unpackBundle (BundleId: number): Promise<void> {
+    if (!axios.defaults.headers.common.Cookie) {
+        Promise.reject("No cookie has been set.");
+    }
+    axios.post(`https://catalog.roblox.com/v1/bundles/${BundleId}/unpack`).catch(error => {
+        Promise.reject(error);
+    });
+}
+
+async function unfavoriteAsset (UserId: number, AssetId: number): Promise<void> {
+    if (!axios.defaults.headers.common.Cookie) {
+        Promise.reject("No cookie has been set.");
+    }
+
+    axios.delete(`https://catalog.roblox.com/v1/favorites/users/${UserId}/assets/${AssetId}/favorite`).catch(error => {
+        Promise.reject(error);
+    });
+}
+
+function getUserAssetFavoriteModel (UserId: number, AssetId: number): Promise<UserAssetFavoriteModel> {
+    return new Promise((resolve, reject) => {
+        if (!axios.defaults.headers.common.Cookie) {
+            reject("No cookie has been set.");
+        }
+
+        axios
+            .get(`https://catalog.roblox.com/v1/favorites/users/${UserId}/assets/${AssetId}/favorite`)
+            .then(response => {
+                resolve(response.data);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+}
+
+async function favoriteAsset (UserId: number, AssetId: number): Promise<void> {
+    if (!axios.defaults.headers.common.Cookie) {
+        Promise.reject("No cookie has been set.");
+    }
+    axios.post(`https://catalog.roblox.com/v1/favorites/users/${UserId}/assets/${AssetId}/favorite`).catch(error => {
+        Promise.reject(error);
+    });
+}
+
+async function favoriteBundle (UserId: number, BundleId: number): Promise<void> {
+    if (!axios.defaults.headers.common.Cookie) {
+        Promise.reject("No cookie has been set.");
+    }
+    axios.post(`https://catalog.roblox.com/v1/favorites/users/${UserId}/bundles/${BundleId}/favorite`).catch(error => {
+        Promise.reject(error);
+    });
+}
+
+async function unfavoriteBundle (UserId: number, BundleId: number): Promise<void> {
+    if (!axios.defaults.headers.common.Cookie) {
+        Promise.reject("No cookie has been set.");
+    }
     axios
-      .get(`https://catalog.roblox.com/v1/subcategories`)
-      .then((response) => {
-        resolve(response.data);
-      })
-      .catch((error) => {
-        reject(new Error(error));
-      });
-  });
+        .delete(`https://catalog.roblox.com/v1/favorites/users/${UserId}/bundles/${BundleId}/favorite`)
+        .catch(error => {
+            Promise.reject(error);
+        });
+}
+
+function getUserBundleFavoriteModel (UserId: number, BundleId: number): Promise<UserAssetFavoriteModel> {
+    return new Promise((resolve, reject) => {
+        if (!axios.defaults.headers.common.Cookie) {
+            reject("No cookie has been set.");
+        }
+        axios
+            .get(`https://catalog.roblox.com/v1/favorites/users/${UserId}/bundles/${BundleId}/favorite`)
+            .then(response => {
+                resolve(response.data);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
 }
 
 export default Catalog;

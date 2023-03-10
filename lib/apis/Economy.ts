@@ -1,26 +1,29 @@
-import axios from 'axios';
+import axios from "axios";
 
 export type RobuxCount = number;
 
 type BaseEconomy = {
-  GetClientRobuxCount(): Promise<RobuxCount>;
+    getClientRobuxCount(): Promise<RobuxCount>;
 };
 
 const Economy: BaseEconomy = {
-  GetClientRobuxCount,
+    getClientRobuxCount
 };
 
-function GetClientRobuxCount(): Promise<RobuxCount> {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(`https://economy.roblox.com/v1/user/currency`)
-      .then((response) => {
-        resolve(response.data.robux);
-      })
-      .catch((error) => {
-        reject(new Error(error));
-      });
-  });
+function getClientRobuxCount (): Promise<RobuxCount> {
+    return new Promise((resolve, reject) => {
+        if (!axios.defaults.headers.common.Cookie) {
+            reject("No cookie has been set.");
+        }
+        axios
+            .get(`https://economy.roblox.com/v1/user/currency`)
+            .then(response => {
+                resolve(response.data.robux);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
 }
 
 export default Economy;
