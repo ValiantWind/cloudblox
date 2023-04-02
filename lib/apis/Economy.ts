@@ -1,29 +1,50 @@
-import axios from "axios";
+import Client from "../client";
+import BaseAPI from "./Base";
 
 export type RobuxCount = number;
 
-type BaseEconomy = {
-    getClientRobuxCount(): Promise<RobuxCount>;
-};
+// Export type ProductInfo = {
 
-const Economy: BaseEconomy = {
-    getClientRobuxCount
-};
+// }
 
-function getClientRobuxCount (): Promise<RobuxCount> {
-    return new Promise((resolve, reject) => {
-        if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
-        }
-        axios
-            .get(`https://economy.roblox.com/v1/user/currency`)
-            .then(response => {
+class BaseEconomy extends BaseAPI {
+    constructor (client?: Client) {
+        super({
+            baseUrl: "https://economy.roblox.com/",
+            client
+        });
+    }
+
+    getClientRobuxCount (): Promise<RobuxCount> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/user/currency`,
+                requiresAuth: true
+            }).then(response => {
                 resolve(response.data.robux);
-            })
-            .catch(error => {
+            }).catch(error => {
                 reject(error);
             });
-    });
+        });
+    }
+
+
+    // GetProductInfo(assetId: number): Promise<ProductInfo> {
+    // 	return new Promise((resolve, reject) => {
+    // 	this.request({
+    // 		method: 'get',
+    // 		path: `v2/assets/${assetId}/details`,
+    // 		requiresAuth: false
+    // 	}).then(response => {
+    // 		resolve(response.data)
+    // 	}).catch(error => {
+    // 		reject(error)
+    // 	})
+    // })
+    // }
 }
+
+const Economy = new BaseEconomy();
 
 export default Economy;

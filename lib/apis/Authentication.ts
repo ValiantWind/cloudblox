@@ -1,4 +1,5 @@
-import axios from "axios";
+import Client from "../client";
+import Base from "./Base";
 
 export type ClientPinStatus = {
     isEnabled: boolean;
@@ -9,55 +10,59 @@ export type AuthMetaData = {
     cookieLawNoticeTimeout: number;
 };
 
-type BaseAuth = {
-    getClientPinStatus(): Promise<ClientPinStatus>;
-    getAuthMetaData(): Promise<AuthMetaData>;
-};
-
-const Auth: BaseAuth = {
-    getClientPinStatus,
-    getAuthMetaData
-};
-
-function getClientPinStatus (): Promise<ClientPinStatus> {
-    return new Promise((resolve, reject) => {
-        if (!axios.defaults.headers.common.Cookie) {
-            reject(new Error("No cookie has been set."));
-        }
-        axios
-            .get(`https://auth.roblox.com/v1/account/pin`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getAuthMetaData (): Promise<AuthMetaData> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://auth.roblox.com/v1/auth/metadata`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-async function changeClientUsername (): Promise<void> {
-    if (!axios.defaults.headers.common.Cookie) {
-        Promise.reject(new Error("No cookie has been set."));
+class BaseAuth extends Base {
+    constructor (client?: Client) {
+        super({
+            baseUrl: "https://auth.roblox.com/",
+            client
+        });
     }
 
-	 axios
-        .post(`https://auth.roblox.com/v2/username`)
-        .catch(error => {
-            Promise.reject(error);
+    getClientPinStatus (): Promise<ClientPinStatus> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: "v1/account/pin",
+                requiresAuth: true
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
         });
+    }
+
+    getAuthMetaData (): Promise<AuthMetaData> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: "v1/auth/metadata",
+                requiresAuth: false
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    async changeClientUsername (): Promise<void> {
+        await this.request({
+            method: "post",
+            path: "v2/username",
+            requiresAuth: true
+        })
+            .catch(error => {
+                Promise.reject(error);
+            });
+    }
 }
+
+
+const Auth = new BaseAuth();
 
 export default Auth;

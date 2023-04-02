@@ -1,4 +1,5 @@
-import axios from "axios";
+import Client from "../client";
+import Base from "./Base";
 
 export type AssetOwners = {
     previousPageCursor: string | null;
@@ -36,96 +37,90 @@ export type UserInventoryCategories = {
 
 export type UserFavoriteCategories = UserInventoryCategories;
 
-type BaseInventory = {
-    getAssetOwners(
-        AssetId: number,
+
+class BaseInventory extends Base {
+    constructor (client?: Client) {
+        super({
+            baseUrl: "https://inventory.roblox.com/",
+            client
+        });
+    }
+
+    getAssetOwners (
+        assetId: number,
         sortOrder?: "Asc" | "Desc",
         limit?: 10 | 25 | 50 | 100,
         cursor?: string,
-    ): Promise<AssetOwners>;
-    canViewInventory(UserId: number): Promise<CanViewInventory>;
-    getUserInventoryCategories(UserId: number): Promise<UserInventoryCategories>;
-    getUserFavoriteCategories(UserId: number): Promise<UserFavoriteCategories>;
-};
-
-const Inventory: BaseInventory = {
-    getAssetOwners,
-    canViewInventory,
-    getUserInventoryCategories,
-    getUserFavoriteCategories
-};
-
-function getAssetOwners (
-    AssetId: number,
-    sortOrder?: "Asc" | "Desc",
-    limit?: 10 | 25 | 50 | 100,
-    cursor?: string,
-): Promise<AssetOwners> {
-    return new Promise((resolve, reject) => {
-        if (!sortOrder) {
-            sortOrder = "Asc";
-        }
-        if (!limit) {
-            limit = 10;
-        }
-
-        const config = {
-            method: "get",
-            url: `https://inventory.roblox.com/v2/assets/${AssetId}/owners`,
-            params: {
-                sortOrder,
-                limit,
-                cursor
-            }
-        };
-
-        axios(config)
-            .then(response => {
-                resolve(response.data);
+    ): Promise<AssetOwners> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v2/assets/${assetId}/owners`,
+                requiresAuth: false,
+                params: {
+                    sortOrder,
+                    limit,
+                    cursor
+                }
             })
-            .catch(error => {
-                reject(error);
-            });
-    });
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    canViewInventory (userId: number): Promise<CanViewInventory> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/users/${userId}/can-view-inventory`,
+                requiresAuth: false
+            })
+                .then(response => {
+                    resolve(response.data.canView);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    getUserInventoryCategories (userId: number): Promise<UserInventoryCategories> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/users/${userId}/categories`,
+                requiresAuth: false
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    getUserFavoriteCategories (userId: number): Promise<UserFavoriteCategories> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/users/${userId}/categories/favorites`,
+                requiresAuth: false
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
 }
 
-function canViewInventory (UserId: number): Promise<CanViewInventory> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://inventory.roblox.com/v1/users/${UserId}/can-view-inventory`)
-            .then(response => {
-                resolve(response.data.canView);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getUserInventoryCategories (UserId: number): Promise<UserInventoryCategories> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://inventory.roblox.com/v1/users/${UserId}/categories`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getUserFavoriteCategories (UserId: number): Promise<UserFavoriteCategories> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://inventory.roblox.com/v1/users/${UserId}/categories/favorites`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
+const Inventory = new BaseInventory();
 
 export default Inventory;

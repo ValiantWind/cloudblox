@@ -65,14 +65,20 @@ interface Config {
     Assets?: string;
     PlacePublishing?: string;
     DataStoreService?: string;
+    OrderedDataStores?: string;
 }
+
+export type UserId = number;
 
 const config: Config = {};
 
 export default class Client {
-    private readonly baseUsersUrl: string = "https://users.roblox.com";
+    protected readonly baseUsersUrl?: string = "https://users.roblox.com";
+    clientUserId?: number;
+
 
     Configure ({
+        UniverseId,
         MessagingService,
         Assets,
         PlacePublishing,
@@ -86,6 +92,7 @@ export default class Client {
         DataStoreService?: string;
         Cookie?: string;
     } = {}) {
+        config.UniverseId = UniverseId;
         config.MessagingService = MessagingService;
         config.Assets = Assets;
         config.PlacePublishing = PlacePublishing;
@@ -93,71 +100,19 @@ export default class Client {
         axios.defaults.headers.common.Cookie = `.ROBLOSECURITY=${Cookie}`;
     }
 
-    getAgeBracket (): Promise<ClientAgeBracket> {
-        return new Promise((resolve, reject) => {
-            axios
-                .get(`${this.baseUsersUrl}/v1/users/authenticated/age-bracket`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Accept: "application/json"
-                    }
-                })
-                .then(response => {
-                    resolve(response.data);
-                })
-                .catch(error => {
-                    reject(error);
-                });
-        });
-    }
 
-    getCountryCode (): Promise<ClientCountryCode> {
+    getClientUserId (): Promise<UserId> {
         return new Promise((resolve, reject) => {
             axios
-                .get(`${this.baseUsersUrl}/v1/users/authenticated/country-code`, {
+                .get(`${this.baseUsersUrl}/v1/users/authenticated`, {
                     headers: {
                         "Content-Type": "application/json",
                         Accept: "application/json"
                     }
                 })
                 .then(response => {
-                    resolve(response.data);
-                })
-                .catch(error => {
-                    reject(error);
-                });
-        });
-    }
-
-    getAvatarDetails (): Promise<ClientAvatarDetails> {
-        return new Promise((resolve, reject) => {
-            axios
-                .get(`https://avatar.roblox.com/v1/avatar`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Accept: "application/json"
-                    }
-                })
-                .then(response => {
-                    resolve(response.data);
-                })
-                .catch(error => {
-                    reject(error);
-                });
-        });
-    }
-
-    getUserInfo (): Promise<ClientUserInfo> {
-        return new Promise((resolve, reject) => {
-            axios
-                .post(`https://users.roblox.com/v1/users/authenticated`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Accept: "application/json"
-                    }
-                })
-                .then(response => {
-                    resolve(response.data);
+                    resolve(response.data.id);
+                    this.clientUserId = response.data.id;
                 })
                 .catch(error => {
                     reject(error);

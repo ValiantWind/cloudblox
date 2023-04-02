@@ -306,7 +306,7 @@ function getUserCurrentlyWearing (UserId: number): Promise<UserCurrentlyWearing>
 function getClientAvatar (): Promise<ClientAvatarDetails> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
         axios
             .get(`https://avatar.roblox.com/v1/avatar`, {
@@ -327,7 +327,7 @@ function getClientAvatar (): Promise<ClientAvatarDetails> {
 function removeClientAsset (AssetId: number): Promise<boolean> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
         axios
             .post(`https://avatar.roblox.com/v1/avatar/assets/${AssetId}/remove`, {
@@ -367,7 +367,7 @@ function setClientBodyScales (
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
         axios
             .post(`https://avatar.roblox.com/v1/avatar/set-scales`, {
@@ -449,17 +449,17 @@ function getGameStartInfo (UniverseId: number): Promise<AvatarGameStartInfo> {
 
 async function redrawClientThumbnail (): Promise<void> {
     if (!axios.defaults.headers.common.Cookie) {
-        Promise.reject("No cookie has been set.");
+        Promise.reject(new Error("No cookie has been set."));
     }
-    axios.post(`https://avatar.roblox.com/v1/avatar/redraw-thumbnail`).catch(error => {
+    await axios.post(`https://avatar.roblox.com/v1/avatar/redraw-thumbnail`).catch(error => {
         Promise.reject(error);
     });
 }
 
-async function setClientBodyColors (BodyColors: AvatarBodyColors): Promise<boolean> {
+function setClientBodyColors (BodyColors: AvatarBodyColors): Promise<boolean> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
         axios
             .post(`https://avatar.roblox.com/v1/avatar/set-body-colors`, {
@@ -503,7 +503,7 @@ function deleteClientOutfit (OutfitId: number): Promise<boolean> {
 function wearClientOutfit (OutfitId: number): Promise<OutfitInvalidAssets> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
         axios
             .post(`https://avatar.roblox.com/v1/outfits/${OutfitId}/wear`)
@@ -518,9 +518,9 @@ function wearClientOutfit (OutfitId: number): Promise<OutfitInvalidAssets> {
 
 async function createClientOutfit (OutfitOptions: NewOutfitOptions): Promise<void> {
     if (!axios.defaults.headers.common.Cookie) {
-        Promise.reject("No cookie has been set.");
+        Promise.reject(new Error("No cookie has been set."));
     }
-    axios
+    await axios
         .post(`https://avatar.roblox.com/v2/outfits/create`, {
             outfitUpdateModel: OutfitOptions
         })
@@ -532,7 +532,7 @@ async function createClientOutfit (OutfitOptions: NewOutfitOptions): Promise<voi
 function updateClientOutfit (OutfitId: number, OutfitOptions: NewOutfitOptions): Promise<UpdatedOutfitResults> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
         axios
             .patch(`https://avatar.roblox.com/v2/outfits/${OutfitId}`, {
@@ -550,7 +550,7 @@ function updateClientOutfit (OutfitId: number, OutfitOptions: NewOutfitOptions):
 function getRecentItems (RecentItemListType: 0 | 1 | 2 | 3 | 4 | 5 | 6): Promise<RecentItems> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
         axios
             .get(`https://avatar.roblox.com/v1/recent-items/${RecentItemListType}/list`)
@@ -566,7 +566,7 @@ function getRecentItems (RecentItemListType: 0 | 1 | 2 | 3 | 4 | 5 | 6): Promise
 function setWearingAssets (assetIdParams: AssetIdParams): Promise<PossibleInvalidAssets> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
         axios
             .post(`https://avatar.roblox.com/v2/avatar/set-wearing-assets`, {

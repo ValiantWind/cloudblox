@@ -395,19 +395,19 @@ function getSubCategories (): Promise<SubCategories> {
 
 async function unpackBundle (BundleId: number): Promise<void> {
     if (!axios.defaults.headers.common.Cookie) {
-        Promise.reject("No cookie has been set.");
+        Promise.reject(new Error("No cookie has been set."));
     }
-    axios.post(`https://catalog.roblox.com/v1/bundles/${BundleId}/unpack`).catch(error => {
+    await axios.post(`https://catalog.roblox.com/v1/bundles/${BundleId}/unpack`).catch(error => {
         Promise.reject(error);
     });
 }
 
 async function unfavoriteAsset (UserId: number, AssetId: number): Promise<void> {
     if (!axios.defaults.headers.common.Cookie) {
-        Promise.reject("No cookie has been set.");
+        Promise.reject(new Error("No cookie has been set."));
     }
 
-    axios.delete(`https://catalog.roblox.com/v1/favorites/users/${UserId}/assets/${AssetId}/favorite`).catch(error => {
+    await axios.delete(`https://catalog.roblox.com/v1/favorites/users/${UserId}/assets/${AssetId}/favorite`).catch(error => {
         Promise.reject(error);
     });
 }
@@ -415,7 +415,7 @@ async function unfavoriteAsset (UserId: number, AssetId: number): Promise<void> 
 function getUserAssetFavoriteModel (UserId: number, AssetId: number): Promise<UserAssetFavoriteModel> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         axios
@@ -431,27 +431,27 @@ function getUserAssetFavoriteModel (UserId: number, AssetId: number): Promise<Us
 
 async function favoriteAsset (UserId: number, AssetId: number): Promise<void> {
     if (!axios.defaults.headers.common.Cookie) {
-        Promise.reject("No cookie has been set.");
+        Promise.reject(new Error("No cookie has been set."));
     }
-    axios.post(`https://catalog.roblox.com/v1/favorites/users/${UserId}/assets/${AssetId}/favorite`).catch(error => {
+    await axios.post(`https://catalog.roblox.com/v1/favorites/users/${UserId}/assets/${AssetId}/favorite`).catch(error => {
         Promise.reject(error);
     });
 }
 
 async function favoriteBundle (UserId: number, BundleId: number): Promise<void> {
     if (!axios.defaults.headers.common.Cookie) {
-        Promise.reject("No cookie has been set.");
+        Promise.reject(new Error("No cookie has been set."));
     }
-    axios.post(`https://catalog.roblox.com/v1/favorites/users/${UserId}/bundles/${BundleId}/favorite`).catch(error => {
+    await axios.post(`https://catalog.roblox.com/v1/favorites/users/${UserId}/bundles/${BundleId}/favorite`).catch(error => {
         Promise.reject(error);
     });
 }
 
 async function unfavoriteBundle (UserId: number, BundleId: number): Promise<void> {
     if (!axios.defaults.headers.common.Cookie) {
-        Promise.reject("No cookie has been set.");
+        Promise.reject(new Error("No cookie has been set."));
     }
-    axios
+    await axios
         .delete(`https://catalog.roblox.com/v1/favorites/users/${UserId}/bundles/${BundleId}/favorite`)
         .catch(error => {
             Promise.reject(error);
@@ -461,7 +461,7 @@ async function unfavoriteBundle (UserId: number, BundleId: number): Promise<void
 function getUserBundleFavoriteModel (UserId: number, BundleId: number): Promise<UserAssetFavoriteModel> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
         axios
             .get(`https://catalog.roblox.com/v1/favorites/users/${UserId}/bundles/${BundleId}/favorite`)
