@@ -1,4 +1,5 @@
-import axios from "axios";
+import Client from "../client";
+import Base from "./Base";
 
 export type LastOnline = {
     lastOnlineTimestamps: {
@@ -7,44 +8,50 @@ export type LastOnline = {
     }[];
 };
 
-type BasePresence = {
-    getLastOnline(UserIds: number[]): Promise<LastOnline>;
-    registerClientAppPresence(location: string, PlaceId: number, disconnect: boolean): Promise<void>;
-};
-
-const Presence: BasePresence = {
-    getLastOnline,
-    registerClientAppPresence
-};
-
-function getLastOnline (UserIds: number[]): Promise<LastOnline> {
-    return new Promise((resolve, reject) => {
-        axios
-            .post(`https://presence.roblox.com/v1/presence/last-online`, {
-                userIds: [UserIds.join(",")]
-            })
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-async function registerClientAppPresence (location: string, PlaceId: number, disconnect: boolean): Promise<void> {
-    if (!axios.defaults.headers.common.Cookie) {
-        Promise.reject(new Error("No cookie has been set."));
-    }
-    await axios
-        .post(`https://presence.roblox.com/v1/presence/register-app-presence`, {
-            location,
-            placeId: PlaceId,
-            disconnect
-        })
-        .catch(error => {
-            Promise.reject(error);
+class BasePresence extends Base {
+    constructor (client?: Client) {
+        super({
+            baseUrl: "https://presence.roblox.com/",
+            client
         });
+    }
+
+    getLastOnline (userIds: number[]): Promise<LastOnline> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "post",
+                path: "v1/presence/last-online",
+                requiresAuth: false,
+                data: {
+                    userIds: [userIds.join(",")]
+                }
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    async registerClientAppPresence (location: string, placeId: number, disconnect: boolean): Promise<void> {
+        await this.request({
+            method: "post",
+            path: "v1/presence/register-app-presence",
+            requiresAuth: true,
+            data: {
+                location,
+                placeId,
+                disconnect
+            }
+        })
+            .catch(error => {
+                Promise.reject(error);
+            });
+    }
 }
+
+const Presence = new BasePresence();
 
 export default Presence;

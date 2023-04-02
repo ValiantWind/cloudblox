@@ -117,9 +117,9 @@ function getBadgeInfo (BadgeId: number): Promise<BadgeInfo> {
 
 async function updateBadgeConfig (BadgeId: number, name: string, description: string, enabled: boolean): Promise<void> {
     if (!axios.defaults.headers.common.Cookie) {
-        Promise.reject("No cookie has been set.");
+        Promise.reject(new Error("No cookie has been set."));
     }
-    axios
+    await axios
         .patch(`https://badges.roblox.com/v1/badges/${BadgeId}`, {
             name,
             description,
@@ -218,18 +218,18 @@ function getUserBadgeAwardDates (UserId: number, BadgeIds: number[]): Promise<Us
 
 async function removeUserBadge (UserId: number, BadgeId: number): Promise<void> {
     if (!axios.defaults.headers.common.Cookie) {
-        Promise.reject("No cookie has been set.");
+        Promise.reject(new Error("No cookie has been set."));
     }
-    axios.delete(`https://badges.roblox.com/v1/user/${UserId}/badges/${BadgeId}`).catch(error => {
+    await axios.delete(`https://badges.roblox.com/v1/user/${UserId}/badges/${BadgeId}`).catch(error => {
         Promise.reject(error);
     });
 }
 
 async function removeClientBadge (BadgeId: number): Promise<void> {
     if (!axios.defaults.headers.common.Cookie) {
-        Promise.reject("No cookie has been set.");
+        Promise.reject(new Error("No cookie has been set."));
     }
-    axios.delete(`https://badges.roblox.com/v1/user/badges/${BadgeId}`).catch(error => {
+    await axios.delete(`https://badges.roblox.com/v1/user/badges/${BadgeId}`).catch(error => {
         Promise.reject(error);
     });
 }
@@ -284,7 +284,7 @@ class BadgeBuilder {
     create (): Promise<NewBadgeDetails> {
         return new Promise((resolve, reject) => {
             if (!axios.defaults.headers.common.Cookie) {
-                reject("No cookie has been set.");
+                reject(new Error("No cookie has been set."));
             }
 
             const config = {

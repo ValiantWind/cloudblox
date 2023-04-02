@@ -1,4 +1,5 @@
-import axios from "axios";
+import Client from "../client";
+import Base from "./Base";
 
 export type ContactsMetaData = {
     multiGetContactsMaxSize: number;
@@ -16,60 +17,70 @@ export type PostStatus = {
 
 export type UserTag = string;
 
-type BaseContacts = {
-    getMetaData(): Promise<ContactsMetaData>;
-    getUserTags(UserIds: number[]): Promise<MultiUserTags>;
-    setUserTag(UserId: number, tag: string): Promise<UserTag>;
-};
+class BaseContacts extends Base {
+    constructor (client?: Client) {
+        super({
+            baseUrl: "https://contacts.roblox.com/",
+            client
+        });
+    }
 
-const Contacts: BaseContacts = {
-    getMetaData,
-    getUserTags,
-    setUserTag
-};
-
-function getMetaData (): Promise<ContactsMetaData> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://contacts.roblox.com/v1/contacts/metadata`)
-            .then(response => {
-                resolve(response.data);
+    getMetaData (): Promise<ContactsMetaData> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: "v1/contacts/metadata",
+                requiresAuth: false
             })
-            .catch(error => {
-                reject(error);
-            });
-    });
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    getUserTags (userIds: number[]): Promise<MultiUserTags> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "post",
+                path: "v1/user/get-tags",
+                requiresAuth: true,
+                data: {
+                    targetUserIds: userIds
+                }
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    setUserTag (userId: number, tag: string): Promise<UserTag> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "post",
+                path: "v1/user/tag",
+                requiresAuth: true,
+                data: {
+                    targetUserId: userId,
+                    userTag: tag
+                }
+            })
+                .then(response => {
+                    resolve(response.data.status);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
 }
 
-function getUserTags (UserIds: number[]): Promise<MultiUserTags> {
-    return new Promise((resolve, reject) => {
-        axios
-            .post(`https://contacts.roblox.com/v1/user/get-tags`, {
-                targetUserIds: UserIds
-            })
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function setUserTag (UserId: number, tag: string): Promise<UserTag> {
-    return new Promise((resolve, reject) => {
-        axios
-            .post(`https://contacts.roblox.com/v1/user/tag`, {
-                targetUserId: UserId,
-                userTag: tag
-            })
-            .then(response => {
-                resolve(response.data.status);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
+const Contacts = new BaseContacts();
 
 export default Contacts;

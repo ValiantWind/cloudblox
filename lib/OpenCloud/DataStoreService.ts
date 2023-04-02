@@ -77,7 +77,7 @@ class DataStore {
     public readonly universeId: number;
     public readonly scope: string;
     private apikey: string;
-    private readonly baseUrl: string;
+    private baseUrl: string;
 
     constructor (name: string, universeId: number, apikey: string, baseUrl: string, scope = "global") {
         this.name = name;

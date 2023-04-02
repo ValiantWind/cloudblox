@@ -1,4 +1,6 @@
 import { config } from "../client";
+import Develop from "../apis/Develop";
+
 
 import axios from "axios";
 
@@ -14,15 +16,13 @@ const PlacePublishing: BasePlacePublishing = {
 
 const URL = `https://apis.roblox.com/universes/`;
 
-async function Save(PlaceId: number): Promise<void> {
+async function Save (PlaceId: number): Promise<void> {
+    const UniverseId = await Develop.getUniverseIdFromPlaceId(PlaceId);
     if (!config.PlacePublishing) {
         Promise.reject(new Error("No Place Publishing API Key has been set"));
     }
-    if (!config.UniverseId) {
-        Promise.reject(new Error(`No UniverseId has been set`));
-    }
     await axios
-        .post(`${URL}/v1/universe/${config.UniverseId}/place/${PlaceId}/versions?versionType=Saved`, {
+        .post(`${URL}/v1/universe/${UniverseId}/place/${PlaceId}/versions?versionType=Saved`, {
             headers: {
                 "x-api-key": config.PlacePublishing,
                 "Content-Type": "application/json"
@@ -33,15 +33,13 @@ async function Save(PlaceId: number): Promise<void> {
         });
 }
 
-async function Publish(PlaceId: number): Promise<void> {
+async function Publish (PlaceId: number): Promise<void> {
+    const UniverseId = await Develop.getUniverseIdFromPlaceId(PlaceId);
     if (!config.PlacePublishing) {
         Promise.reject(new Error("No Place Publishing API Key has been set"));
     }
-    if (!config.UniverseId) {
-        Promise.reject(new Error(`No UniverseId has been set`));
-    }
     await axios
-        .post(`${URL}/v1/universe/${config.UniverseId}/place/${PlaceId}/versions?versionType=Published`, {
+        .post(`${URL}/v1/universe/${UniverseId}/place/${PlaceId}/versions?versionType=Published`, {
             headers: {
                 "x-api-key": config.PlacePublishing,
                 "Content-Type": "application/json"

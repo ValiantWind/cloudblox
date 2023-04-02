@@ -292,7 +292,7 @@ const Chat: BaseChat = {
 function getClientChatSettings (): Promise<ClientChatSettings> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         axios
@@ -309,7 +309,7 @@ function getClientChatSettings (): Promise<ClientChatSettings> {
 function getClientConversations (conversationIds: number[]): Promise<ClientConversations[]> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         axios
@@ -330,7 +330,7 @@ function getClientMessages (
 ): Promise<ClientMessages[]> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         const config = {
@@ -356,7 +356,7 @@ function getClientMessages (
 function getRolloutSettings (featureNames: string[]): Promise<RolloutSettings[]> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         axios
@@ -373,7 +373,7 @@ function getRolloutSettings (featureNames: string[]): Promise<RolloutSettings[]>
 function getUnreadConversationCount (): Promise<UnreadConversationCount> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         axios
@@ -390,7 +390,7 @@ function getUnreadConversationCount (): Promise<UnreadConversationCount> {
 function getUnreadMessages (conversationId: number, pageSize: number): Promise<UnreadMessages[]> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         const config = {
@@ -415,7 +415,7 @@ function getUnreadMessages (conversationId: number, pageSize: number): Promise<U
 function getAllClientConversations (pageNumber: number, pageSize: number): Promise<ClientConversations[]> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         const config = {
@@ -440,7 +440,7 @@ function getAllClientConversations (pageNumber: number, pageSize: number): Promi
 function getMetaData (): Promise<ChatMetaData> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         axios
@@ -457,7 +457,7 @@ function getMetaData (): Promise<ChatMetaData> {
 function getLatestMessages (conversationIds: number[], pageSize: number): Promise<LatestMessages[]> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         const config = {
@@ -480,9 +480,9 @@ function getLatestMessages (conversationIds: number[], pageSize: number): Promis
 }
 
 function addUsersToConversation (conversationId: number, UserIds: number[]): Promise<ConversationStatus> {
-    return new Promise((resolve, reject) => {
+    return new Promise(reject => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         axios
@@ -491,7 +491,7 @@ function addUsersToConversation (conversationId: number, UserIds: number[]): Pro
                 conversationId
             })
             .catch(error => {
-                reject(Error);
+                reject(error);
             });
     });
 }
@@ -499,7 +499,7 @@ function addUsersToConversation (conversationId: number, UserIds: number[]): Pro
 function markConversationAsRead (conversationId: number, endMessageId: string): Promise<ChatResultType> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         axios
@@ -519,7 +519,7 @@ function markConversationAsRead (conversationId: number, endMessageId: string): 
 function markConversationAsSeen (conversationIds: number[]): Promise<ChatResultType> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            Promise.reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         axios
@@ -536,9 +536,9 @@ function markConversationAsSeen (conversationIds: number[]): Promise<ChatResultT
 }
 
 function removeUserFromConversation (conversationId: number, userId: number): Promise<ConversationResultStatus> {
-    return new Promise((resolve, reject) => {
+    return new Promise(reject => {
         if (!axios.defaults.headers.common.Cookie) {
-            Promise.reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         axios
@@ -547,7 +547,7 @@ function removeUserFromConversation (conversationId: number, userId: number): Pr
                 conversationId
             })
             .catch(error => {
-                Promise.reject(error);
+                reject(error);
             });
     });
 }
@@ -555,7 +555,7 @@ function removeUserFromConversation (conversationId: number, userId: number): Pr
 function renameGroupConversation (conversationId: number, newTitle: string): Promise<ConversationTitleStatus> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         axios
@@ -575,7 +575,7 @@ function renameGroupConversation (conversationId: number, newTitle: string): Pro
 function resetConversationUniverse (conversationId: number): Promise<ChatStatusMessage> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            Promise.reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         axios
@@ -601,7 +601,7 @@ function sendGameLinkMessage (
 ): Promise<GameLinkMessageStatus> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         axios
@@ -631,7 +631,7 @@ function sendChatMessage (
 ): Promise<SentMessageStatus> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         axios
@@ -654,7 +654,7 @@ function sendChatMessage (
 function setConversationUniverse (conversationId: number, universeId: number): Promise<ChatStatusMessage> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         axios
@@ -674,7 +674,7 @@ function setConversationUniverse (conversationId: number, universeId: number): P
 function createCloudEditConversation (placeId: number): Promise<CloudEditConversationDetails> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         axios
@@ -693,7 +693,7 @@ function createCloudEditConversation (placeId: number): Promise<CloudEditConvers
 function createGroupConversation (userIds: number[], title: string): Promise<NewGroupConversationDetails> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         axios
@@ -713,7 +713,7 @@ function createGroupConversation (userIds: number[], title: string): Promise<New
 function createConversation (userId: number): Promise<NewConversationDetails> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         axios
@@ -732,7 +732,7 @@ function createConversation (userId: number): Promise<NewConversationDetails> {
 function setClientTypingStatus (conversationId: number, typingStatus: boolean): Promise<ChatStatusMessage> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
-            reject("No cookie has been set.");
+            reject(new Error("No cookie has been set."));
         }
 
         axios

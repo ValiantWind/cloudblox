@@ -1,4 +1,5 @@
 import axios from "axios";
+import request from "../request";
 
 export type AssetInfo = {
     previousPageCursor: string;
@@ -229,6 +230,8 @@ export type CreatorDashboardMetaData = {
     playFabDataSourceChartsAvailableByKPITypes: string[];
 };
 
+export type PlaceAgeDataAvailability = boolean;
+
 type BaseDevelop = {
     getAssetInfo(
         AssetId: number,
@@ -265,7 +268,8 @@ type BaseDevelop = {
         startTime?: string,
         endTime?: string,
     ): Promise<PlaceStatistics>;
-    getCreatorDashboardMetaData (): Promise<CreatorDashboardMetaData>
+    getCreatorDashboardMetaData(): Promise<CreatorDashboardMetaData>
+    isPlaceAgeDataAvailable(placeId: number): Promise<PlaceAgeDataAvailability>
 };
 
 const Develop: BaseDevelop = {
@@ -286,9 +290,9 @@ const Develop: BaseDevelop = {
     getPlaceCompatibilites,
     getPlaceStatistics,
     getCreatorDashboardMetaData,
-	
-	
-	
+    isPlaceAgeDataAvailable
+
+
 };
 
 function getAssetInfo (
@@ -607,6 +611,20 @@ function getCreatorDashboardMetaData (): Promise<CreatorDashboardMetaData> {
             .catch(error => {
                 reject(error);
             });
+    });
+}
+
+function isPlaceAgeDataAvailable (placeId: number): Promise<PlaceAgeDataAvailability> {
+    return new Promise((resolve, reject) => {
+        request({
+            method: "get",
+            url: `https://develop.roblox.com/v1/places/${placeId}/stats/is-age-data-available`,
+            requiresAuth: true
+        }).then(response => {
+            resolve(response.data.isAgeDataAvailable);
+        }).catch(error => {
+            reject(error);
+        });
     });
 }
 
