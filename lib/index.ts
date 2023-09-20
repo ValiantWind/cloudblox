@@ -1,6 +1,5 @@
 import AccountInformation from "./apis/AccountInformation";
 import AccountSettings from "./apis/AccountSettings";
-import Auth from "./apis/Authentication";
 import Avatar from "./apis/Avatar";
 import Badges from "./apis/Badges";
 import Catalog from "./apis/Catalog";
@@ -23,7 +22,6 @@ import DataStoreService from "./OpenCloud/DataStoreService";
 export {
     AccountInformation,
     AccountSettings,
-    Auth,
     Avatar,
     Badges,
     Catalog,

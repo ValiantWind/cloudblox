@@ -1,4 +1,5 @@
-import axios from "axios";
+import Client from "../client";
+import Base from "./Base";
 
 export type Scale = {
     min: number;
@@ -226,359 +227,343 @@ export type PossibleInvalidAssets = {
     success: boolean;
 };
 
-type BaseAvatar = {
-    getUserAvatar(UserId: number): Promise<UserAvatarDetails>;
-    getUserCurrentlyWearing(UserId: number): Promise<UserCurrentlyWearing>;
-    removeClientAsset(AssetId: number): Promise<boolean>;
-    getClientAvatar(): Promise<ClientAvatarDetails>;
-    getUserOutfits(UserId: number): Promise<UserOutfits>;
-    setClientBodyScales(
+class BaseAvatar extends Base {
+    constructor (client?: Client) {
+        super({
+            baseUrl: "https://avatar.roblox.com/",
+            client
+        });
+    }
+
+    getUserAvatar (userId: number): Promise<UserAvatarDetails> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/users/${userId}/avatar`,
+                authRequired: false
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    getUserCurrentlyWearing (userId: number): Promise<UserCurrentlyWearing> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/users/${userId}/currently-wearing`,
+                authRequired: false
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    getClientAvatar (): Promise<ClientAvatarDetails> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: "v1/avatar",
+                authRequired: true
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    removeClientAsset (assetId: number): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/avatar/assets/${assetId}/remove`,
+                authRequired: true
+            })
+                .then(response => {
+                    resolve(response.data.success);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    getUserOutfits (userId: number): Promise<UserOutfits> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/users/${userId}/outfits`,
+                authRequired: false
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    setClientBodyScales (
         height: number,
         width: number,
         head: number,
         depth: number,
         proportion: number,
         bodyType: number,
-    ): Promise<boolean>;
-    setClientAvatarType(AvatarType: "R6" | "R15"): Promise<boolean>;
-    getAvatarRules(): Promise<AvatarRules>;
-    getMetaData(): Promise<AvatarMetaData>;
-    getGameStartInfo(UniverseId: number): Promise<AvatarGameStartInfo>;
-    redrawClientThumbnail(): Promise<void>;
-    setClientBodyColors(BodyColors: AvatarBodyColors): Promise<boolean>;
-    getOutfitDetails(OutfitId: number): Promise<OutfitDetails>;
-    deleteClientOutfit(OutfitId: number): Promise<boolean>;
-    wearClientOutfit(OutfitId: number): Promise<OutfitInvalidAssets>;
-    createClientOutfit(OutfitOptions: NewOutfitOptions): Promise<void>;
-    updateClientOutfit(OutfitId: number, OutfitOptions: NewOutfitOptions): Promise<UpdatedOutfitResults>;
-    getRecentItems(RecentItemListType: 0 | 1 | 2 | 3 | 4 | 5 | 6): Promise<RecentItems>;
-    setWearingAssets(assetIdParams: AssetIdParams): Promise<PossibleInvalidAssets>;
-};
-
-const Avatar: BaseAvatar = {
-    getUserAvatar,
-    getUserCurrentlyWearing,
-    removeClientAsset,
-    getClientAvatar,
-    getUserOutfits,
-    setClientBodyScales,
-    setClientAvatarType,
-    getAvatarRules,
-    getMetaData,
-    getGameStartInfo,
-    redrawClientThumbnail,
-    setClientBodyColors,
-    getOutfitDetails,
-    deleteClientOutfit,
-    wearClientOutfit,
-    createClientOutfit,
-    updateClientOutfit,
-    getRecentItems,
-    setWearingAssets
-};
-
-function getUserAvatar (UserId: number): Promise<UserAvatarDetails> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://avatar.roblox.com/v1/users/${UserId}/avatar`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getUserCurrentlyWearing (UserId: number): Promise<UserCurrentlyWearing> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://avatar.roblox.com/v1/users/${UserId}/currently-wearing`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getClientAvatar (): Promise<ClientAvatarDetails> {
-    return new Promise((resolve, reject) => {
-        if (!axios.defaults.headers.common.Cookie) {
-            reject(new Error("No cookie has been set."));
-        }
-        axios
-            .get(`https://avatar.roblox.com/v1/avatar`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json"
+    ): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "post",
+                path: "v1/avatar/set-scales",
+                authRequired: true,
+                data: {
+                    height,
+                    width,
+                    head,
+                    depth,
+                    proportion,
+                    bodyType
                 }
             })
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
 
-function removeClientAsset (AssetId: number): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        if (!axios.defaults.headers.common.Cookie) {
-            reject(new Error("No cookie has been set."));
-        }
-        axios
-            .post(`https://avatar.roblox.com/v1/avatar/assets/${AssetId}/remove`, {
-                headers: {
-                    Accept: "application/json"
+    setClientAvatarType (avatarType: "R6" | "R15"): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            let AvatarType: number;
+            if (avatarType === "R6") {
+                AvatarType = 1;
+            } else if (avatarType === "R15") {
+                AvatarType = 3;
+            }
+
+            this.request({
+                method: "post",
+                path: "v1/avatar/set-player-avatar-type",
+                authRequired: true,
+                data: {
+                    playerAvatarType: AvatarType
                 }
             })
-            .then(response => {
-                resolve(response.data.success);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getUserOutfits (UserId: number): Promise<UserOutfits> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://avatar.roblox.com/v1/users/${UserId}/outfits`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function setClientBodyScales (
-    height: number,
-    width: number,
-    head: number,
-    depth: number,
-    proportion: number,
-    bodyType: number,
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        if (!axios.defaults.headers.common.Cookie) {
-            reject(new Error("No cookie has been set."));
-        }
-        axios
-            .post(`https://avatar.roblox.com/v1/avatar/set-scales`, {
-                height,
-                width,
-                head,
-                depth,
-                proportion,
-                bodyType
-            })
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function setClientAvatarType (AvatarType: "R6" | "R15"): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        let avatarType: number;
-        if (AvatarType === "R6") {
-            avatarType = 1;
-        } else if (AvatarType === "R15") {
-            avatarType = 3;
-        }
-        axios
-            .post(`https://avatar.roblox.com/v1/avatar/set-player-avatar-type`, {
-                playerAvatarType: avatarType
-            })
-            .then(response => {
-                resolve(response.data.success);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getAvatarRules (): Promise<AvatarRules> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://avatar.roblox.com/v1/avatar-rules`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getMetaData (): Promise<AvatarMetaData> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://avatar.roblox.com/v1/avatar/metadata`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getGameStartInfo (UniverseId: number): Promise<AvatarGameStartInfo> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://avatar.roblox.com/v1/game-start-info?universeId=${UniverseId}`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-async function redrawClientThumbnail (): Promise<void> {
-    if (!axios.defaults.headers.common.Cookie) {
-        Promise.reject(new Error("No cookie has been set."));
+                .then(response => {
+                    resolve(response.data.success);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
     }
-    await axios.post(`https://avatar.roblox.com/v1/avatar/redraw-thumbnail`).catch(error => {
-        Promise.reject(error);
-    });
-}
 
-function setClientBodyColors (BodyColors: AvatarBodyColors): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        if (!axios.defaults.headers.common.Cookie) {
-            reject(new Error("No cookie has been set."));
-        }
-        axios
-            .post(`https://avatar.roblox.com/v1/avatar/set-body-colors`, {
-                BodyColors
+    getAvatarRules (): Promise<AvatarRules> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: "v1/avatar-rules",
+                authRequired: false
             })
-            .then(response => {
-                resolve(response.data.success);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getOutfitDetails (OutfitId: number): Promise<OutfitDetails> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://avatar.roblox.com/v1/outfits/${OutfitId}/details`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function deleteClientOutfit (OutfitId: number): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        axios
-            .post(`https://avatar.roblox.com/v1/outfits/${OutfitId}/delete`)
-            .then(response => {
-                resolve(response.data.success);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function wearClientOutfit (OutfitId: number): Promise<OutfitInvalidAssets> {
-    return new Promise((resolve, reject) => {
-        if (!axios.defaults.headers.common.Cookie) {
-            reject(new Error("No cookie has been set."));
-        }
-        axios
-            .post(`https://avatar.roblox.com/v1/outfits/${OutfitId}/wear`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-async function createClientOutfit (OutfitOptions: NewOutfitOptions): Promise<void> {
-    if (!axios.defaults.headers.common.Cookie) {
-        Promise.reject(new Error("No cookie has been set."));
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
     }
-    await axios
-        .post(`https://avatar.roblox.com/v2/outfits/create`, {
-            outfitUpdateModel: OutfitOptions
-        })
-        .catch(error => {
+
+    getMetaData (): Promise<AvatarMetaData> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: "v1/avatar/metadata",
+                authRequired: false
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    getGameStartInfo (universeId: number): Promise<AvatarGameStartInfo> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/game-start-info?universeId=${universeId}`,
+                authRequired: false
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    async redrawClientThumbnail (): Promise<void> {
+        await this.request({
+            method: "post",
+            path: "v1/avatar/redraw-thumbnail",
+            authRequired: true
+        }).catch(error => {
             Promise.reject(error);
         });
+    }
+
+    setClientBodyColors (bodyColors: AvatarBodyColors): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "post",
+                path: "v1/avatar/set-body-colors",
+                authRequired: true,
+								data: {
+									bodyColors
+								}
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    getOutfitDetails (outfitId: number): Promise<OutfitDetails> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/outfits/${outfitId}/details`,
+                authRequired: false
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    deleteClientOutfit (outfitId: number): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "post",
+                path: `v1/outfits/${outfitId}/delete`,
+                authRequired: true
+            })
+                .then(response => {
+                    resolve(response.data.success);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    wearClientOutfit (outfitId: number): Promise<OutfitInvalidAssets> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "post",
+                path: `v1/outfits/${outfitId}/wear`,
+                authRequired: true
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    async createClientOutfit (outfitOptions: NewOutfitOptions): Promise<void> {
+        await this.request({
+            method: "post",
+            path: `v2/outfits/create`,
+            authRequired: true,
+            data: {
+                outfitUpdateModel: outfitOptions
+            }
+        }).catch(error => {
+            Promise.reject(error);
+        });
+    }
+
+    updateClientOutfit (outfitId: number, outfitOptions: NewOutfitOptions): Promise<UpdatedOutfitResults> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "patch",
+                path: `v2/outfits/${outfitId}`,
+                authRequired: true,
+                data: {
+                    outfitUpdateModel: outfitOptions
+                }
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    getRecentItems (recentItemListType: 0 | 1 | 2 | 3 | 4 | 5 | 6): Promise<RecentItems> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/recent-items/${recentItemListType}/list`,
+                authRequired: true
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    setWearingAssets (assetIdParams: AssetIdParams): Promise<PossibleInvalidAssets> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "post",
+                path: "v2/avatar/set-wearing-assets",
+                authRequired: true,
+                data: {
+                    wearRequestModel: assetIdParams
+                }
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
 }
 
-function updateClientOutfit (OutfitId: number, OutfitOptions: NewOutfitOptions): Promise<UpdatedOutfitResults> {
-    return new Promise((resolve, reject) => {
-        if (!axios.defaults.headers.common.Cookie) {
-            reject(new Error("No cookie has been set."));
-        }
-        axios
-            .patch(`https://avatar.roblox.com/v2/outfits/${OutfitId}`, {
-                outfitUpdateModel: OutfitOptions
-            })
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getRecentItems (RecentItemListType: 0 | 1 | 2 | 3 | 4 | 5 | 6): Promise<RecentItems> {
-    return new Promise((resolve, reject) => {
-        if (!axios.defaults.headers.common.Cookie) {
-            reject(new Error("No cookie has been set."));
-        }
-        axios
-            .get(`https://avatar.roblox.com/v1/recent-items/${RecentItemListType}/list`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function setWearingAssets (assetIdParams: AssetIdParams): Promise<PossibleInvalidAssets> {
-    return new Promise((resolve, reject) => {
-        if (!axios.defaults.headers.common.Cookie) {
-            reject(new Error("No cookie has been set."));
-        }
-        axios
-            .post(`https://avatar.roblox.com/v2/avatar/set-wearing-assets`, {
-                wearRequestModel: assetIdParams
-            })
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
+const Avatar = new BaseAvatar();
 export default Avatar;

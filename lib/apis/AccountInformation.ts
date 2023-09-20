@@ -67,7 +67,6 @@ export type VerifiedUserHatAssetId = {
 export type ClientDescription = string;
 export type ClientGender = string;
 
-
 class BaseAccountInformation extends BaseAPI {
     constructor (client?: Client) {
         super({
@@ -81,20 +80,27 @@ class BaseAccountInformation extends BaseAPI {
             this.request({
                 method: "get",
                 path: `v1/birthdate`,
-                requiresAuth: true
-            }).then(response => {
-                resolve(response.data);
-            }).catch(error => {
-                reject(error);
-            });
+                authRequired: true
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
         });
     }
 
-    async updateClientBirthdate (birthMonth: number, birthDay: number, birthYear: number, clientPassword: number): Promise<void> {
+    async updateClientBirthdate (
+        birthMonth: number,
+        birthDay: number,
+        birthYear: number,
+        clientPassword: number,
+    ): Promise<void> {
         await this.request({
             method: "post",
             path: "v1/birthdate",
-            requiresAuth: true,
+            authRequired: true,
             data: {
                 birthMonth,
                 birthDay,
@@ -111,10 +117,11 @@ class BaseAccountInformation extends BaseAPI {
             this.request({
                 method: "get",
                 path: `v1/description`,
-                requiresAuth: true
-            }).then(response => {
-                resolve(response.data.description);
+                authRequired: true
             })
+                .then(response => {
+                    resolve(response.data.description);
+                })
                 .catch(error => {
                     reject(error);
                 });
@@ -125,14 +132,13 @@ class BaseAccountInformation extends BaseAPI {
         await this.request({
             method: "post",
             path: `v1/description`,
-            requiresAuth: true,
+            authRequired: true,
             data: {
                 description
             }
-        })
-            .catch(error => {
-                Promise.reject(error);
-            });
+        }).catch(error => {
+            Promise.reject(error);
+        });
     }
 
     getClientGender (): Promise<ClientGender> {
@@ -140,10 +146,11 @@ class BaseAccountInformation extends BaseAPI {
             this.request({
                 method: "get",
                 path: `v1/gender`,
-                requiresAuth: true
-            }).then(response => {
-                resolve(response.data.gender);
+                authRequired: true
             })
+                .then(response => {
+                    resolve(response.data.gender);
+                })
                 .catch(error => {
                     reject(error);
                 });
@@ -154,14 +161,13 @@ class BaseAccountInformation extends BaseAPI {
         await this.request({
             method: "get",
             path: `v1/gender`,
-            requiresAuth: true,
+            authRequired: true,
             data: {
                 gender
             }
-        })
-            .catch(error => {
-                Promise.reject(error);
-            });
+        }).catch(error => {
+            Promise.reject(error);
+        });
     }
 
     getClientXboxLoginStreak (): Promise<ClientXboxLoginStreakInDays> {
@@ -169,7 +175,7 @@ class BaseAccountInformation extends BaseAPI {
             this.request({
                 method: "get",
                 path: `v1/xbox-live/consecutive-login-days`,
-                requiresAuth: true
+                authRequired: true
             })
                 .then(response => {
                     resolve(response.data);
@@ -185,12 +191,14 @@ class BaseAccountInformation extends BaseAPI {
             this.request({
                 method: "get",
                 path: `v1/metadata`,
-                requiresAuth: false
-            }).then(response => {
-                resolve(response.data);
-            }).catch(error => {
-                reject(error);
-            });
+                authRequired: false
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
         });
     }
 
@@ -199,25 +207,22 @@ class BaseAccountInformation extends BaseAPI {
             this.request({
                 method: "get",
                 path: `v1/phone`,
-                requiresAuth: true
-            }).then(response => {
-                resolve(response.data);
-            }).catch(error => {
-                reject(error);
-            });
+                authRequired: true
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
         });
     }
 
-    async setClientPhoneInfo (
-        countryCode: string,
-        prefix: string,
-        phoneNumber: string,
-        password: string,
-    ): Promise<void> {
+    async setClientPhoneInfo (countryCode: string, prefix: string, phoneNumber: string, password: string): Promise<void> {
         await this.request({
             method: "post",
             path: "v1/phone",
-            requiresAuth: true,
+            authRequired: true,
             data: {
                 countryCode,
                 prefix,
@@ -229,26 +234,20 @@ class BaseAccountInformation extends BaseAPI {
         });
     }
 
-    async deleteClientPhone (
-        countryCode: string,
-        prefix: string,
-        phoneNumber: string,
-        password: string,
-    ): Promise<void> {
+    async deleteClientPhone (countryCode: string, prefix: string, phoneNumber: string, password: string): Promise<void> {
         await this.request({
             method: "post",
             path: "v1/phone/delete",
-            requiresAuth: true,
+            authRequired: true,
             data: {
                 countryCode,
                 prefix,
                 phone: phoneNumber,
                 password
             }
-        })
-            .catch(error => {
-                Promise.reject(error);
-            });
+        }).catch(error => {
+            Promise.reject(error);
+        });
     }
 
     async resendPhoneValidationCode (
@@ -260,31 +259,29 @@ class BaseAccountInformation extends BaseAPI {
         await this.request({
             method: "post",
             path: "v1/phone/resend",
-            requiresAuth: true,
+            authRequired: true,
             data: {
                 countryCode,
                 prefix,
                 phone: phoneNumber,
                 password
             }
-        })
-            .catch(error => {
-                Promise.reject(error);
-            });
+        }).catch(error => {
+            Promise.reject(error);
+        });
     }
 
     async verifyClientPhone (code: number): Promise<void> {
         await this.request({
             method: "post",
             path: "v1/phone/verify",
-            requiresAuth: true,
+            authRequired: true,
             data: {
                 code
             }
-        })
-            .catch(error => {
-                Promise.reject(error);
-            });
+        }).catch(error => {
+            Promise.reject(error);
+        });
     }
 
     getClientPromotions (): Promise<ClientPromotionChannels> {
@@ -292,7 +289,7 @@ class BaseAccountInformation extends BaseAPI {
             this.request({
                 method: "get",
                 path: "v1/promotion-channels",
-                requiresAuth: true
+                authRequired: true
             })
                 .then(response => {
                     resolve(response.data);
@@ -314,7 +311,7 @@ class BaseAccountInformation extends BaseAPI {
         await this.request({
             method: "post",
             path: "v1/phone/promotion-channels",
-            requiresAuth: true,
+            authRequired: true,
             data: {
                 facebook,
                 twitter,
@@ -323,10 +320,9 @@ class BaseAccountInformation extends BaseAPI {
                 guilded,
                 promotionChannelsVisibilityPrivacy: promotionsVisible
             }
-        })
-            .catch(error => {
-                Promise.reject(error);
-            });
+        }).catch(error => {
+            Promise.reject(error);
+        });
     }
 
     getUserPromotions (userId: number): Promise<UserPromotions> {
@@ -334,7 +330,7 @@ class BaseAccountInformation extends BaseAPI {
             this.request({
                 method: "get",
                 path: `v1/users/${userId}/promotion-channel`,
-                requiresAuth: false
+                authRequired: false
             })
                 .then(response => {
                     resolve(response.data);
@@ -350,7 +346,7 @@ class BaseAccountInformation extends BaseAPI {
             this.request({
                 method: "get",
                 path: "v1/star-code-affiliates",
-                requiresAuth: true
+                authRequired: true
             })
                 .then(response => {
                     resolve(response.data);
@@ -366,7 +362,7 @@ class BaseAccountInformation extends BaseAPI {
             this.request({
                 method: "post",
                 path: "v1/star-code-affiliates",
-                requiresAuth: true,
+                authRequired: true,
                 data: {
                     code
                 }
@@ -384,7 +380,7 @@ class BaseAccountInformation extends BaseAPI {
         await this.request({
             method: "delete",
             path: "v1/star-code-affiliates",
-            requiresAuth: true
+            authRequired: true
         }).catch(error => {
             Promise.reject(error);
         });
@@ -395,7 +391,7 @@ class BaseAccountInformation extends BaseAPI {
             this.request({
                 method: "get",
                 path: `v1/users/${userId}/roblox-badges`,
-                requiresAuth: false
+                authRequired: false
             })
                 .then(response => {
                     resolve(response.data);
@@ -411,7 +407,7 @@ class BaseAccountInformation extends BaseAPI {
             this.request({
                 method: "post",
                 path: "v1/email/verify",
-                requiresAuth: true,
+                authRequired: true,
                 data: {
                     ticket
                 }

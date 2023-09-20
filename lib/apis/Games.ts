@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 
 export type GameMediaData = {
     data: {
@@ -231,30 +231,55 @@ export type MultiPrivateServers = {
     }[];
 };
 
+export type EngagementPayoutHistory = {
+    additionalProp1: {
+        engagementScore: number;
+        payoutInRobux: number;
+        payoutType: string;
+        eligibilityType: string;
+    };
+    additionalProp2: {
+        engagementScore: number;
+        payoutInRobux: number;
+        payoutType: string;
+        eligibilityType: string;
+    };
+    additionalProp3: {
+        engagementScore: number;
+        payoutInRobux: number;
+        payoutType: string;
+        eligibilityType: string;
+    };
+};
+
 type BaseGames = {
-    getMediaData(UniverseId: number): Promise<GameMediaData>;
-    multiGetGameDetails(UniverseIds: number[]): Promise<MultiGameDetails>;
-    multiGetGameProductInfo(UniverseIds: number[]): Promise<MultiGameProductInfo>;
+    getEngagementPayoutHistory(universeId: number, startDate: string, endDate: string): Promise<EngagementPayoutHistory>;
+    getMediaData(universeId: number): Promise<GameMediaData>;
+    multiGetGameDetails(universeIds: number[]): Promise<MultiGameDetails>;
+    multiGetGameProductInfo(universeIds: number[]): Promise<MultiGameProductInfo>;
     getGameSpotlightList(): Promise<GameSpotlightList>;
-    multiGetPlaceDetails(PlaceIds: number[]): Promise<MultiPlaceDetails>;
-    multiGetGamePlayabilityStatus(UniverseIds: number[]): Promise<GamePlayabilityStatus>;
-    getGameSorts(SortsContext: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7): Promise<GameSortList>;
-    getFavoriteCount(UniverseId: number): Promise<GameFavoriteCount>;
-    arePrivateServersEnabledForGame(UniverseId: number): Promise<PrivateServersEnabled>;
-    isFavoritedByClient(UniverseId: number): Promise<FavoritedByClient>;
-    getClientVoteStatus(UniverseId: number): Promise<ClientVoteStatus>;
-    multiGetGameVotes(UniverseIds: number[]): Promise<MultiGameVotes>;
-    voteGame(UniverseId: number, vote: boolean): Promise<void>;
-    multiGetPrivateServers(PrivateServerIds: number[]): Promise<MultiPrivateServers>;
+    multiGetPlaceDetails(placeIds: number[]): Promise<MultiPlaceDetails>;
+    multiGetGamePlayabilityStatus(universeIds: number[]): Promise<GamePlayabilityStatus>;
+    getGameSorts(sortsContext: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7): Promise<GameSortList>;
+    getFavoriteCount(universeId: number): Promise<GameFavoriteCount>;
+    arePrivateServersEnabledForGame(universeId: number): Promise<PrivateServersEnabled>;
+    isFavoritedByClient(universeId: number): Promise<FavoritedByClient>;
+    getClientVoteStatus(universeId: number): Promise<ClientVoteStatus>;
+    multiGetGameVotes(universeIds: number[]): Promise<MultiGameVotes>;
+    voteGame(universeId: number, vote: boolean): Promise<void>;
+    multiGetPrivateServers(privateServerIds: number[]): Promise<MultiPrivateServers>;
     getGamePasses(
-        UniverseId: number,
+        universeId: number,
         sortOrder?: "Asc" | "Desc",
         limit?: 10 | 25 | 50 | 100,
         cursor?: string,
     ): Promise<GameGamePasses>;
+    favoriteGame(universeId: number): Promise<void>;
+    unfavoriteGame(universeId: number): Promise<void>;
 };
 
 const Games: BaseGames = {
+    getEngagementPayoutHistory,
     getMediaData,
     multiGetGameDetails,
     multiGetGameProductInfo,
@@ -269,13 +294,43 @@ const Games: BaseGames = {
     multiGetGameVotes,
     voteGame,
     multiGetPrivateServers,
-    getGamePasses
+    getGamePasses,
+    favoriteGame,
+    unfavoriteGame
 };
 
-function getMediaData (UniverseId: number): Promise<GameMediaData> {
+function getEngagementPayoutHistory (
+    universeId: number,
+    startDate: string,
+    endDate: string,
+): Promise<EngagementPayoutHistory> {
+    return new Promise((resolve, reject) => {
+        if (!axios.defaults.headers.common.Cookie) {
+            reject(new Error("No cookie has been set."));
+        }
+
+        const config = {
+            method: "get",
+            url: "https://engagementpayouts.roblox.com/v1/universe-payout-history",
+            params: {
+                universeId,
+                startDate,
+                endDate
+            }
+        };
+        axios(config)
+            .then(response => {
+                resolve(response.data);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+}
+function getMediaData (universeId: number): Promise<GameMediaData> {
     return new Promise((resolve, reject) => {
         axios
-            .get(`http://games.roblox.com/v2/games/${UniverseId}/media`)
+            .get(`http://games.roblox.com/v2/games/${universeId}/media`)
             .then(response => {
                 resolve(response.data);
             })
@@ -285,10 +340,10 @@ function getMediaData (UniverseId: number): Promise<GameMediaData> {
     });
 }
 
-function multiGetGameDetails (UniverseIds: number[]): Promise<MultiGameDetails> {
+function multiGetGameDetails (universeIds: number[]): Promise<MultiGameDetails> {
     return new Promise((resolve, reject) => {
         axios
-            .get(`https://games.roblox.com/v1/games?universeIds=${UniverseIds.join(",")}`)
+            .get(`https://games.roblox.com/v1/games?universeIds=${universeIds.join(",")}`)
             .then(response => {
                 resolve(response.data);
             })
@@ -298,10 +353,10 @@ function multiGetGameDetails (UniverseIds: number[]): Promise<MultiGameDetails> 
     });
 }
 
-function multiGetGameProductInfo (UniverseIds: number[]): Promise<MultiGameProductInfo> {
+function multiGetGameProductInfo (universeIds: number[]): Promise<MultiGameProductInfo> {
     return new Promise((resolve, reject) => {
         axios
-            .get(`https://games.roblox.com/v1/games/games-product-info?universeIds=${UniverseIds.join(",")}`)
+            .get(`https://games.roblox.com/v1/games/games-product-info?universeIds=${universeIds.join(",")}`)
             .then(response => {
                 resolve(response.data);
             })
@@ -324,10 +379,10 @@ function getGameSpotlightList (): Promise<GameSpotlightList> {
     });
 }
 
-function multiGetPlaceDetails (PlaceIds: number[]): Promise<MultiPlaceDetails> {
+function multiGetPlaceDetails (placeIds: number[]): Promise<MultiPlaceDetails> {
     return new Promise((resolve, reject) => {
         axios
-            .get(`https://games.roblox.com/v1/games/multiget-place-details?placeIds=${PlaceIds.join(",")}`)
+            .get(`https://games.roblox.com/v1/games/multiget-place-details?placeIds=${placeIds.join(",")}`)
             .then(response => {
                 resolve(response.data);
             })
@@ -337,13 +392,13 @@ function multiGetPlaceDetails (PlaceIds: number[]): Promise<MultiPlaceDetails> {
     });
 }
 
-function multiGetGamePlayabilityStatus (UniverseIds: number[]): Promise<GamePlayabilityStatus> {
+function multiGetGamePlayabilityStatus (universeIds: number[]): Promise<GamePlayabilityStatus> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
             reject(new Error("No cookie has been set."));
         }
         axios
-            .get(`https://games.roblox.com/v1/games/multiget-playability-status?universeIds=${UniverseIds.join(",")}`)
+            .get(`https://games.roblox.com/v1/games/multiget-playability-status?universeIds=${universeIds.join(",")}`)
             .then(response => {
                 resolve(response.data);
             })
@@ -353,10 +408,10 @@ function multiGetGamePlayabilityStatus (UniverseIds: number[]): Promise<GamePlay
     });
 }
 
-function getGameSorts (SortsContext: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7): Promise<GameSortList> {
+function getGameSorts (sortsContext: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7): Promise<GameSortList> {
     return new Promise((resolve, reject) => {
         axios
-            .get(`https://games.roblox.com/v1/games/sorts?GameSortsContext=${SortsContext}`)
+            .get(`https://games.roblox.com/v1/games/sorts?GameSortsContext=${sortsContext}`)
             .then(response => {
                 resolve(response.data);
             })
@@ -366,10 +421,10 @@ function getGameSorts (SortsContext: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7): Promise<Gam
     });
 }
 
-function getFavoriteCount (UniverseId: number): Promise<GameFavoriteCount> {
+function getFavoriteCount (universeId: number): Promise<GameFavoriteCount> {
     return new Promise((resolve, reject) => {
         axios
-            .get(`https://games.roblox.com/v1/games/${UniverseId}/favorites/count`)
+            .get(`https://games.roblox.com/v1/games/${universeId}/favorites/count`)
             .then(response => {
                 resolve(response.data.favoritesCount);
             })
@@ -380,7 +435,7 @@ function getFavoriteCount (UniverseId: number): Promise<GameFavoriteCount> {
 }
 
 function getGamePasses (
-    UniverseId: number,
+    universeId: number,
     sortOrder?: "Asc" | "Desc",
     limit?: 10 | 25 | 50 | 100,
     cursor?: string,
@@ -393,9 +448,9 @@ function getGamePasses (
             limit = 10;
         }
 
-        const config = {
+        const config: AxiosRequestConfig = {
             method: "get",
-            url: `https://games.roblox.com/v1/games/${UniverseId}/game-passes`,
+            url: `https://games.roblox.com/v1/games/${universeId}/game-passes`,
             params: {
                 sortOrder,
                 limit,
@@ -413,13 +468,13 @@ function getGamePasses (
     });
 }
 
-function arePrivateServersEnabledForGame (UniverseId: number): Promise<PrivateServersEnabled> {
+function arePrivateServersEnabledForGame (universeId: number): Promise<PrivateServersEnabled> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
             reject(new Error("No cookie has been set."));
         }
         axios
-            .get(`https://games.roblox.com/v1/private-servers/enabled-in-universe/${UniverseId}`)
+            .get(`https://games.roblox.com/v1/private-servers/enabled-in-universe/${universeId}`)
             .then(response => {
                 resolve(response.data.privateServersEnabled);
             })
@@ -429,13 +484,13 @@ function arePrivateServersEnabledForGame (UniverseId: number): Promise<PrivateSe
     });
 }
 
-function isFavoritedByClient (UniverseId: number): Promise<FavoritedByClient> {
+function isFavoritedByClient (universeId: number): Promise<FavoritedByClient> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
             reject(new Error("No cookie has been set."));
         }
         axios
-            .get(`https://games.roblox.com/v1/games/${UniverseId}/favorites`)
+            .get(`https://games.roblox.com/v1/games/${universeId}/favorites`)
             .then(response => {
                 resolve(response.data.isFavorited);
             })
@@ -445,13 +500,13 @@ function isFavoritedByClient (UniverseId: number): Promise<FavoritedByClient> {
     });
 }
 
-function getClientVoteStatus (UniverseId: number): Promise<ClientVoteStatus> {
+function getClientVoteStatus (universeId: number): Promise<ClientVoteStatus> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
             reject(new Error("No cookie has been set."));
         }
         axios
-            .get(`https://games.roblox.com/v1/games/${UniverseId}/votes/user`)
+            .get(`https://games.roblox.com/v1/games/${universeId}/votes/user`)
             .then(response => {
                 resolve(response.data);
             })
@@ -461,10 +516,10 @@ function getClientVoteStatus (UniverseId: number): Promise<ClientVoteStatus> {
     });
 }
 
-function multiGetGameVotes (UniverseIds: number[]): Promise<MultiGameVotes> {
+function multiGetGameVotes (universeIds: number[]): Promise<MultiGameVotes> {
     return new Promise((resolve, reject) => {
         axios
-            .get(`https://games.roblox.com/v1/games/votes?universeIds=${UniverseIds.join(",")}`)
+            .get(`https://games.roblox.com/v1/games/votes?universeIds=${universeIds.join(",")}`)
             .then(response => {
                 resolve(response.data);
             })
@@ -474,12 +529,12 @@ function multiGetGameVotes (UniverseIds: number[]): Promise<MultiGameVotes> {
     });
 }
 
-async function voteGame (UniverseId: number, vote: boolean): Promise<void> {
+async function voteGame (universeId: number, vote: boolean): Promise<void> {
     if (!axios.defaults.headers.common.Cookie) {
         Promise.reject(new Error("No cookie has been set."));
     }
     await axios
-        .post(`https://games.roblox.com/v1/games/${UniverseId}/user-votes`, {
+        .post(`https://games.roblox.com/v1/games/${universeId}/user-votes`, {
             headers: {
                 Accept: "application/json",
                 ContentType: "application/json"
@@ -493,10 +548,10 @@ async function voteGame (UniverseId: number, vote: boolean): Promise<void> {
         });
 }
 
-function multiGetPrivateServers (PrivateServerIds: number[]): Promise<MultiPrivateServers> {
+function multiGetPrivateServers (privateServerIds: number[]): Promise<MultiPrivateServers> {
     return new Promise((resolve, reject) => {
         axios
-            .get(`https://games.roblox.com/v1/private-servers?privateServerIds=${PrivateServerIds.join(",")}`)
+            .get(`https://games.roblox.com/v1/private-servers?privateServerIds=${privateServerIds.join(",")}`)
             .then(response => {
                 resolve(response.data);
             })
@@ -506,4 +561,35 @@ function multiGetPrivateServers (PrivateServerIds: number[]): Promise<MultiPriva
     });
 }
 
+async function favoriteGame (universeId: number): Promise<void> {
+    const config: AxiosRequestConfig = {
+        method: "post",
+        url: `https://games.roblox.com/v1/games/${universeId}/favorites`,
+        data: {
+            isFavorited: true
+        }
+    };
+
+    await axios(config).catch(error => {
+        Promise.reject(error);
+    });
+}
+
+async function unfavoriteGame (universeId: number): Promise<void> {
+    if (!axios.defaults.headers.common.Cookie) {
+        Promise.reject(new Error("No cookie has been set."));
+    }
+
+    const config: AxiosRequestConfig = {
+        method: "post",
+        url: `https://games.roblox.com/v1/games/${universeId}/favorites`,
+        data: {
+            isFavorited: false
+        }
+    };
+
+    await axios(config).catch(error => {
+        Promise.reject(error);
+    });
+}
 export default Games;

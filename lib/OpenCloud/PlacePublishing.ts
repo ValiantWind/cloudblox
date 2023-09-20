@@ -1,7 +1,6 @@
 import { config } from "../client";
 import Develop from "../apis/Develop";
 
-
 import axios from "axios";
 
 type BasePlacePublishing = {
@@ -17,7 +16,7 @@ const PlacePublishing: BasePlacePublishing = {
 const URL = `https://apis.roblox.com/universes/`;
 
 async function Save (PlaceId: number): Promise<void> {
-    const UniverseId = await Develop.getUniverseIdFromPlaceId(PlaceId);
+    const UniverseId = await Develop.getUniverseIdFromPlace(PlaceId);
     if (!config.PlacePublishing) {
         Promise.reject(new Error("No Place Publishing API Key has been set"));
     }
@@ -25,7 +24,7 @@ async function Save (PlaceId: number): Promise<void> {
         .post(`${URL}/v1/universe/${UniverseId}/place/${PlaceId}/versions?versionType=Saved`, {
             headers: {
                 "x-api-key": config.PlacePublishing,
-                "Content-Type": "application/json"
+                "Content-Type": "application/octet-stream"
             }
         })
         .catch(error => {
@@ -34,7 +33,7 @@ async function Save (PlaceId: number): Promise<void> {
 }
 
 async function Publish (PlaceId: number): Promise<void> {
-    const UniverseId = await Develop.getUniverseIdFromPlaceId(PlaceId);
+    const UniverseId = await Develop.getUniverseIdFromPlace(PlaceId);
     if (!config.PlacePublishing) {
         Promise.reject(new Error("No Place Publishing API Key has been set"));
     }
@@ -42,7 +41,7 @@ async function Publish (PlaceId: number): Promise<void> {
         .post(`${URL}/v1/universe/${UniverseId}/place/${PlaceId}/versions?versionType=Published`, {
             headers: {
                 "x-api-key": config.PlacePublishing,
-                "Content-Type": "application/json"
+                "Content-Type": "application/octet-stream"
             }
         })
         .catch(error => {
