@@ -83,7 +83,7 @@ class BaseUser extends Base {
             path: `v1/display-names/validate?displayName=${displayName}&${querystring.stringify({
                 birthdate
             })}`,
-            requiresAuth: false
+            authRequired: false
         }).catch(error => {
             Promise.reject(error);
         });
@@ -93,7 +93,7 @@ class BaseUser extends Base {
         await this.request({
             method: "post",
             path: `v1/users/${this.client.clientUserId}/display-names`,
-            requiresAuth: true,
+            authRequired: true,
             data: {
                 displayName
             }
@@ -107,33 +107,34 @@ class BaseUser extends Base {
             this.request({
                 method: "get",
                 path: `v1/users/${userId}`,
-                requiresAuth: false
-            }).then(response => {
-                resolve(response.data);
-            }).catch(error => {
-                reject(error);
-            });
+                authRequired: false
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
         });
     }
 
-    multiGetUsersByUsernames (
-        usernames: string[],
-        excludeBannedUsers: boolean,
-    ): Promise<MultiUserDetailsByUsernames> {
+    multiGetUsersByUsernames (usernames: string[], excludeBannedUsers: boolean): Promise<MultiUserDetailsByUsernames> {
         return new Promise((resolve, reject) => {
             this.request({
                 method: "post",
                 path: "v1/usernames/users",
-                requiresAuth: false,
+                authRequired: false,
                 data: {
                     usernames,
                     excludeBannedUsers
                 }
-            }).then(response => {
-                resolve(response.data);
-            }).catch(error => {
-                reject(error);
-            });
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
         });
     }
 
@@ -142,16 +143,18 @@ class BaseUser extends Base {
             this.request({
                 method: "post",
                 path: "v1/users",
-                requiresAuth: false,
+                authRequired: false,
                 data: {
                     userIds,
                     excludeBannedUsers
                 }
-            }).then(response => {
-                resolve(response.data);
-            }).catch(error => {
-                reject(error);
-            });
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
         });
     }
 
@@ -160,7 +163,7 @@ class BaseUser extends Base {
             this.request({
                 method: "post",
                 path: "v1/usernames/users",
-                requiresAuth: false,
+                authRequired: false,
                 data: {
                     usernames: [username],
                     excludeBannedUsers: false
@@ -180,10 +183,11 @@ class BaseUser extends Base {
             this.request({
                 method: "get",
                 path: "v1/users/authenticated",
-                requiresAuth: true
-            }).then(response => {
-                resolve(response.data);
+                authRequired: true
             })
+                .then(response => {
+                    resolve(response.data);
+                })
                 .catch(error => {
                     reject(error);
                 });
@@ -207,7 +211,7 @@ class BaseUser extends Base {
             this.request({
                 method: "get",
                 path: `v1/users/${userId}/username-history`,
-                requiresAuth: false,
+                authRequired: false,
                 params: {
                     sortOrder,
                     limit,
@@ -228,10 +232,11 @@ class BaseUser extends Base {
             this.request({
                 method: "get",
                 path: "v1/users/authenticated/age-bracket",
-                requiresAuth: true
-            }).then(response => {
-                resolve(response.data.ageBracket);
+                authRequired: true
             })
+                .then(response => {
+                    resolve(response.data.ageBracket);
+                })
                 .catch(error => {
                     reject(error);
                 });
@@ -243,7 +248,7 @@ class BaseUser extends Base {
             this.request({
                 method: "get",
                 path: "v1/users/authenticated/country-code",
-                requiresAuth: true
+                authRequired: true
             })
                 .then(response => {
                     resolve(response.data.countryCode);
@@ -259,7 +264,7 @@ class BaseUser extends Base {
             this.request({
                 method: "get",
                 path: "v1/users/authenticated/roles",
-                requiresAuth: true
+                authRequired: true
             })
                 .then(response => {
                     resolve(response.data);
@@ -279,7 +284,7 @@ class BaseUser extends Base {
             this.request({
                 method: "get",
                 path: "v1/users/search",
-                requiresAuth: false,
+                authRequired: false,
                 params: {
                     keyword,
                     limit,
@@ -301,7 +306,6 @@ class BaseUser extends Base {
         return description;
     }
 }
-
 
 const Users = new BaseUser();
 export default Users;

@@ -37,7 +37,6 @@ export type UserInventoryCategories = {
 
 export type UserFavoriteCategories = UserInventoryCategories;
 
-
 class BaseInventory extends Base {
     constructor (client?: Client) {
         super({
@@ -56,7 +55,7 @@ class BaseInventory extends Base {
             this.request({
                 method: "get",
                 path: `v2/assets/${assetId}/owners`,
-                requiresAuth: false,
+                authRequired: false,
                 params: {
                     sortOrder,
                     limit,
@@ -77,7 +76,7 @@ class BaseInventory extends Base {
             this.request({
                 method: "get",
                 path: `v1/users/${userId}/can-view-inventory`,
-                requiresAuth: false
+                authRequired: false
             })
                 .then(response => {
                     resolve(response.data.canView);
@@ -93,7 +92,7 @@ class BaseInventory extends Base {
             this.request({
                 method: "get",
                 path: `v1/users/${userId}/categories`,
-                requiresAuth: false
+                authRequired: false
             })
                 .then(response => {
                     resolve(response.data);
@@ -109,7 +108,7 @@ class BaseInventory extends Base {
             this.request({
                 method: "get",
                 path: `v1/users/${userId}/categories/favorites`,
-                requiresAuth: false
+                authRequired: false
             })
                 .then(response => {
                     resolve(response.data);

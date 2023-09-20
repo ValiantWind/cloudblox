@@ -64,7 +64,7 @@ class BaseAccountSettings extends Base {
             this.request({
                 method: "get",
                 path: "v1/account/settings/metadata",
-                requiresAuth: false
+                authRequired: false
             })
                 .then(response => {
                     resolve(response.data);
@@ -80,7 +80,7 @@ class BaseAccountSettings extends Base {
             this.request({
                 method: "get",
                 path: "v1/app-chat-privacy",
-                requiresAuth: true
+                authRequired: true
             })
                 .then(response => {
                     resolve(response.data.appChatPrivacy);
@@ -95,14 +95,13 @@ class BaseAccountSettings extends Base {
         await this.request({
             method: "post",
             path: "v1/app-chat-privacy",
-            requiresAuth: true,
+            authRequired: true,
             data: {
                 appChatPrivacy
             }
-        })
-            .catch(error => {
-                Promise.reject(error);
-            });
+        }).catch(error => {
+            Promise.reject(error);
+        });
     }
 
     getClientGameChatPrivacy (): Promise<ClientGameChatPrivacy> {
@@ -110,7 +109,7 @@ class BaseAccountSettings extends Base {
             this.request({
                 method: "get",
                 path: "v1/game-chat-privacy",
-                requiresAuth: true
+                authRequired: true
             })
                 .then(response => {
                     resolve(response.data.gameChatPrivacy);
@@ -125,14 +124,13 @@ class BaseAccountSettings extends Base {
         await this.request({
             method: "post",
             path: "v1/game-chat-privacy",
-            requiresAuth: true,
+            authRequired: true,
             data: {
                 gameChatPrivacy
             }
-        })
-            .catch(error => {
-                Promise.reject(error);
-            });
+        }).catch(error => {
+            Promise.reject(error);
+        });
     }
 
     getClientInventoryPrivacy (): Promise<ClientInventoryPrivacy> {
@@ -140,7 +138,7 @@ class BaseAccountSettings extends Base {
             this.request({
                 method: "get",
                 path: "v1/inventory-privacy",
-                requiresAuth: true
+                authRequired: true
             })
                 .then(response => {
                     resolve(response.data.inventoryPrivacy);
@@ -156,7 +154,7 @@ class BaseAccountSettings extends Base {
             this.request({
                 method: "post",
                 path: "v1/inventory-privacy",
-                requiresAuth: true,
+                authRequired: true,
                 data: {
                     inventoryPrivacy
                 }
@@ -175,7 +173,7 @@ class BaseAccountSettings extends Base {
             this.request({
                 method: "get",
                 path: "v1/private-message-privacy",
-                requiresAuth: true
+                authRequired: true
             })
                 .then(response => {
                     resolve(response.data.privateMessagePrivacy);
@@ -190,14 +188,13 @@ class BaseAccountSettings extends Base {
         await this.request({
             method: "post",
             path: "v1/private-message-privacy",
-            requiresAuth: true,
+            authRequired: true,
             data: {
                 privateMessagePrivacy
             }
-        })
-            .catch(error => {
-                Promise.reject(error);
-            });
+        }).catch(error => {
+            Promise.reject(error);
+        });
     }
 
     getClientTradePrivacy (): Promise<ClientTradePrivacy> {
@@ -205,7 +202,7 @@ class BaseAccountSettings extends Base {
             this.request({
                 method: "get",
                 path: "v1/trade-privacy",
-                requiresAuth: true
+                authRequired: true
             })
                 .then(response => {
                     resolve(response.data.tradePrivacy);
@@ -221,7 +218,7 @@ class BaseAccountSettings extends Base {
             this.request({
                 method: "post",
                 path: "v1/trade-privacy",
-                requiresAuth: true,
+                authRequired: true,
                 data: {
                     tradePrivacy
                 }
@@ -240,7 +237,7 @@ class BaseAccountSettings extends Base {
             this.request({
                 method: "get",
                 path: "v1/email",
-                requiresAuth: true
+                authRequired: true
             })
                 .then(response => {
                     resolve(response.data);
@@ -259,16 +256,15 @@ class BaseAccountSettings extends Base {
         await this.request({
             method: "patch",
             path: "v1/email",
-            requiresAuth: true,
+            authRequired: true,
             data: {
                 password,
                 emailAddress,
                 skipVerificationEmail
             }
-        })
-            .catch(error => {
-                Promise.reject(error);
-            });
+        }).catch(error => {
+            Promise.reject(error);
+        });
     }
 
     getClientTradeFilter (): Promise<ClientTradeQualityFilter> {
@@ -276,7 +272,7 @@ class BaseAccountSettings extends Base {
             this.request({
                 method: "get",
                 path: "v1/trade-value",
-                requiresAuth: true
+                authRequired: true
             })
                 .then(response => {
                     resolve(response.data);
@@ -291,28 +287,26 @@ class BaseAccountSettings extends Base {
         await this.request({
             method: "post",
             path: "v1/trade-value",
-            requiresAuth: true,
+            authRequired: true,
             data: {
                 tradeValue
             }
-        })
-            .catch(error => {
-                Promise.reject(error);
-            });
+        }).catch(error => {
+            Promise.reject(error);
+        });
     }
 
     async sendVerificationEmail (freeItem: boolean): Promise<void> {
         await this.request({
             method: "patch",
             path: "v1/email/verify",
-            requiresAuth: true,
+            authRequired: true,
             data: {
                 freeItem
             }
-        })
-            .catch(error => {
-                Promise.reject(error);
-            });
+        }).catch(error => {
+            Promise.reject(error);
+        });
     }
 
     getClientBlockedUsers (): Promise<ClientBlockedUsers> {
@@ -320,7 +314,7 @@ class BaseAccountSettings extends Base {
             this.request({
                 method: "get",
                 path: "v1/users/get-detailed-blocked-users",
-                requiresAuth: true
+                authRequired: true
             })
                 .then(response => {
                     resolve(response.data);
@@ -335,7 +329,7 @@ class BaseAccountSettings extends Base {
         await this.request({
             method: "post",
             path: `v1/users/${userId}/block`,
-            requiresAuth: true
+            authRequired: true
         }).catch(error => {
             Promise.reject(error);
         });
@@ -345,11 +339,10 @@ class BaseAccountSettings extends Base {
         await this.request({
             method: "post",
             path: `v1/users/${userId}/unblock`,
-            requiresAuth: true
-        })
-            .catch(error => {
-                Promise.reject(error);
-            });
+            authRequired: true
+        }).catch(error => {
+            Promise.reject(error);
+        });
     }
 
     getConsumerThemeType (consumerId: string): Promise<ConsumerThemeType> {
@@ -357,7 +350,7 @@ class BaseAccountSettings extends Base {
             this.request({
                 method: "get",
                 path: `v1/themes/1/${consumerId}`,
-                requiresAuth: true
+                authRequired: true
             })
 
                 .then(response => {
@@ -373,14 +366,13 @@ class BaseAccountSettings extends Base {
         await this.request({
             method: "post",
             path: `v1/themes/v1/${consumerId}`,
-            requiresAuth: true,
+            authRequired: true,
             data: {
                 themeType
             }
-        })
-            .catch(error => {
-                Promise.reject(error);
-            });
+        }).catch(error => {
+            Promise.reject(error);
+        });
     }
 
     getThemeTypes (): Promise<ThemeTypes> {
@@ -388,7 +380,7 @@ class BaseAccountSettings extends Base {
             this.request({
                 method: "get",
                 path: "v1/themes/types",
-                requiresAuth: false
+                authRequired: false
             })
                 .then(response => {
                     resolve(response.data);

@@ -1,4 +1,5 @@
 import axios from "axios";
+import EventEmitter from "events";
 // import { Games, Avatar, Badges, Catalog, Develop, Groups, Thumbnails, Users, Auth } from "../dist/index";
 
 import request from "../lib/request";
@@ -12,37 +13,32 @@ import request from "../lib/request";
 // const bundleId = 43
 // const bundleIdArr = [43];
 
+// type UserInfo = ReturnType<(userId: number) => {
+// 	description: string;
+// 	created: Date;
+// 	isBanned: boolean;
+// 	externalAppDisplayName: string;
+// 	hasVerifiedBadge: boolean;
+// 	id: number;
+// 	name: string;
+// 	displayName: string;
+// }>
 
-type UserInfo = ReturnType<(userId: number) => {
-	description: string;
-	created: Date;
-	isBanned: boolean;
-	externalAppDisplayName: string;
-	hasVerifiedBadge: boolean;
-	id: number;
-	name: string;
-	displayName: string;
-}>
-
-
-function	getUserInfo(userId: number): Promise<UserInfo> {
-		return new Promise((resolve, reject) => {
-			request({
-				method: 'get',
-				url: `https://users.roblox.com/v1/users/${userId}`,
-				requiresAuth: false,
-			}).then(response => {
-				resolve(response.data)
-			}).catch(error => {
-				reject(error)
-			})
-		})
+class TestClass extends EventEmitter {
+	constructor(){
+		super()
 	}
 
+	test(){
+		
+	}
+	
+}
 
-async function test(){
-	const info = await getUserInfo(1)
-	console.log(info)
+async function test() {
+	const testclass = new TestClass()
+
+
 }
 
 test()

@@ -4,7 +4,7 @@ import Client from "../client";
 export type UserFollowingsForGame = {
     universeId: number;
     userId: number;
-}
+};
 
 export type UserFollowingGameStatus = {
     UniverseId: number;
@@ -13,11 +13,10 @@ export type UserFollowingGameStatus = {
     IsFollowing: boolean;
     FollowingCountByType: number;
     FollowingLimitByType: number;
-}
+};
 
 export type UnfollowedGame = UserFollowingsForGame;
-export type FollowedGame = UserFollowingsForGame
-
+export type FollowedGame = UserFollowingsForGame;
 
 class BaseFollowings extends Base {
     constructor (client?: Client) {
@@ -27,18 +26,19 @@ class BaseFollowings extends Base {
         });
     }
 
-
     getUserGameFollowings (userId: number): Promise<UserFollowingsForGame[]> {
         return new Promise((resolve, reject) => {
             this.request({
                 method: "get",
                 path: `v1/users/${userId}/universes`,
-                requiresAuth: true
-            }).then(response => {
-                resolve(response.data);
-            }).catch(error => {
-                reject(error);
-            });
+                authRequired: true
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
         });
     }
 
@@ -47,12 +47,14 @@ class BaseFollowings extends Base {
             this.request({
                 method: "get",
                 path: `v1/users/${userId}/universes/${universeId}/status`,
-                requiresAuth: true
-            }).then(response => {
-                resolve(response.data);
-            }).catch(error => {
-                reject(error);
-            });
+                authRequired: true
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
         });
     }
 
@@ -61,12 +63,14 @@ class BaseFollowings extends Base {
             this.request({
                 method: "delete",
                 path: `v1/users/${userId}/universes/${universeId}`,
-                requiresAuth: true
-            }).then(response => {
-                resolve(response.data);
-            }).catch(error => {
-                reject(error);
-            });
+                authRequired: true
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
         });
     }
 
@@ -75,12 +79,14 @@ class BaseFollowings extends Base {
             this.request({
                 method: "post",
                 path: `v1/users/${userId}/universes/${universeId}`,
-                requiresAuth: true
-            }).then(response => {
-                resolve(response.data);
-            }).catch(error => {
-                reject(error);
-            });
+                authRequired: true
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
         });
     }
 }

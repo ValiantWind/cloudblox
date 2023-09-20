@@ -1,5 +1,5 @@
-import axios from "axios";
-import request from "../request";
+import Base from "./Base";
+import Client from "../client";
 
 export type AssetInfo = {
     previousPageCursor: string;
@@ -17,7 +17,7 @@ export type AssetInfo = {
     }[];
 };
 
-export type PlaceConfiguration = {
+export type PlaceConfig = {
     maxPlayerCount: number;
     socialSlotType: string;
     customSocialSlotsCount: number;
@@ -222,7 +222,7 @@ export type PlaceStatistics = {
     dataGranularity: string;
     startTime: Date;
     endTime: Date;
-    data: object
+    data: object;
 };
 
 export type CreatorDashboardMetaData = {
@@ -232,400 +232,355 @@ export type CreatorDashboardMetaData = {
 
 export type PlaceAgeDataAvailability = boolean;
 
-type BaseDevelop = {
-    getAssetInfo(
-        AssetId: number,
-        PlaceId?: number,
+export type FilteredTextDetails = {
+    filteredGameUpdateText: string;
+    isFiltered: boolean;
+    moderationLevel: number;
+};
+
+class BaseDevelop extends Base {
+    constructor (client?: Client) {
+        super({
+            baseUrl: `https://develop.roblox.com/`,
+            client
+        });
+    }
+
+    getAssetInfo (
+        assetId: number,
+        placeId: number,
         sortOrder?: "Desc" | "Asc",
         limit?: 10 | 25 | 50 | 100,
         cursor?: string,
-    ): Promise<AssetInfo>;
-    getPlaceConfig(PlaceId: number): Promise<PlaceConfiguration>;
-    updatePlaceConfig(PlaceId: number, PlaceConfig: PlaceConfiguration): Promise<void>;
-    getGameTemplates(): Promise<GameTemplates>;
-    updateUniverseConfig(UniverseId: number, UniverseConfig: UniverseConfigOptions): Promise<UpdatedUniverseConfig>;
-    getUniverseInfo(UniverseId: number): Promise<UniverseInfo>;
-    canManageAsset(UserId: number, AssetId: number): Promise<CanManage>;
-    getUniverseIdFromPlaceId(PlaceId: number): Promise<UniverseIdFromPlaceId>;
-    getAssetVotingInfo(AssetIds: number[]): Promise<AssetVotingInfo[]>;
-    getGameUpdateMessages(UniverseId: number): Promise<GameUpdateMessages[]>;
-    publishGameUpdateMessage(UniverseId: number, Message: string): Promise<GameUpdateMessageDetails>;
-    filterText(Text: string): Promise<void>;
-    closeTeamTest(PlaceId: number, GameId: number): Promise<void>;
-    getGroupUniverses(
-        GroupId: number,
-        isArchived?: boolean,
-        sortOrder?: string,
-        limit?: number,
+    ): Promise<AssetInfo> {
+        return new Promise((resolve, reject) => {
+            if (!sortOrder) {
+                sortOrder = "Asc";
+            }
+            if (!limit) {
+                limit = 10;
+            }
+            this.request({
+                method: "get",
+                path: `v2/assets/${assetId}/versions`,
+                authRequired: true,
+                params: {
+                    placeId,
+                    sortOrder,
+                    limit,
+                    cursor
+                }
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(e => {
+                    reject(e);
+                });
+        });
+    }
+
+    getPlaceConfig (placeId: number): Promise<PlaceConfig> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v2/place/${placeId}`,
+                authRequired: true
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    async updatePlaceConfig (placeId: number, placeConfig: PlaceConfig): Promise<void> {
+        await this.request({
+            method: "post",
+            path: `v2/places/${placeId}`,
+            authRequired: true,
+            data: {
+                configuration: placeConfig
+            }
+        }).catch(error => {
+            Promise.reject(error);
+        });
+    }
+
+    getGameTemplates (): Promise<GameTemplates> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/gametemplates`,
+                authRequired: false
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    getUniverseInfo (universeId: number): Promise<UniverseInfo> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/universes/${universeId}`,
+                authRequired: false
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    canManageAsset (userId: number, assetId: number): Promise<CanManage> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/user/${userId}/canmanage/${assetId}`,
+                authRequired: false
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    getUniverseIdFromPlace (placeId: number): Promise<UniverseIdFromPlaceId> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/places/${placeId}/universe`,
+                authRequired: false
+            })
+                .then(response => {
+                    resolve(response.data.universeId);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    getAssetVotingInfo (assetIds: number[]): Promise<AssetVotingInfo[]> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/assets/voting?assetIds=${assetIds.join(",")}`,
+                authRequired: false
+            })
+                .then(response => {
+                    resolve(response.data.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    getGameUpdateMessages (universeId: number): Promise<GameUpdateMessages[]> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/gameUpdateNotifications/${universeId}`,
+                authRequired: true
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    publishGameUpdateMessage (universeId: number, message: string): Promise<GameUpdateMessageDetails> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "post",
+                path: `v1/gameUpdateNotifications/${universeId}`,
+                authRequired: true,
+                data: {
+                    gameUpdateText: message
+                }
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    filterText (text: string): Promise<FilteredTextDetails> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "post",
+                path: "v1/gameUpdateNotifications/filter",
+                authRequired: true,
+                data: {
+                    gameUpdateText: text
+                }
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    updateUniverseConfig (universeId: number, universeConfig: UniverseConfigOptions): Promise<UpdatedUniverseConfig> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "patch",
+                path: `v2/universes/${universeId}/configuration`,
+                authRequired: true,
+                data: {
+                    UniverseConfig: universeConfig
+                }
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    async closeTeamTest (placeId: number, gameInstanceId: string): Promise<void> {
+        await this.request({
+            method: "delete",
+            path: `v2/teamtest/${placeId}`,
+            authRequired: true,
+            params: {
+                gameId: gameInstanceId
+            }
+        }).catch(error => {
+            Promise.reject(error);
+        });
+    }
+
+    getGroupUniverses (
+        groupId: number,
+        sortOrder = "Asc",
+        limit = 10,
+        isArchived = false,
         cursor?: string,
-    ): Promise<GroupUniverses>;
-    getPlaceCompatibilites(PlaceId: number): Promise<PlaceCompatibilities>;
-    getPlaceStatistics(
-        PlaceId: number,
+    ): Promise<GroupUniverses> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/groups/${groupId}/universes`,
+                authRequired: false,
+                params: {
+                    isArchived,
+                    sortOrder,
+                    limit,
+                    cursor
+                }
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    getPlaceCompatibilities (placeId: number): Promise<PlaceCompatibilities> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/places/${placeId}/compatibilities`,
+                authRequired: false
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    getPlaceStatistics (
+        placeId: number,
         type: "Revenue" | "RevenuePerVisit" | "AverageVisitLength" | "Visits",
         granularity: "Hourly" | "Daily" | "Monthly",
         divisionType?: "Device" | "Age",
         startTime?: string,
         endTime?: string,
-    ): Promise<PlaceStatistics>;
-    getCreatorDashboardMetaData(): Promise<CreatorDashboardMetaData>
-    isPlaceAgeDataAvailable(placeId: number): Promise<PlaceAgeDataAvailability>
-};
-
-const Develop: BaseDevelop = {
-    getAssetInfo,
-    getPlaceConfig,
-    updatePlaceConfig,
-    getGameTemplates,
-    updateUniverseConfig,
-    getUniverseInfo,
-    canManageAsset,
-    getUniverseIdFromPlaceId,
-    getAssetVotingInfo,
-    getGameUpdateMessages,
-    publishGameUpdateMessage,
-    filterText,
-    closeTeamTest,
-    getGroupUniverses,
-    getPlaceCompatibilites,
-    getPlaceStatistics,
-    getCreatorDashboardMetaData,
-    isPlaceAgeDataAvailable
-
-
-};
-
-function getAssetInfo (
-    AssetId: number,
-    PlaceId?: number,
-    sortOrder?: "Desc" | "Asc",
-    limit?: 10 | 25 | 50 | 100,
-    cursor?: string,
-): Promise<AssetInfo> {
-    return new Promise((resolve, reject) => {
-        if (!axios.defaults.headers.common.Cookie) {
-            reject(new Error("No cookie has been set."));
-        }
-
-        if (!sortOrder) {
-            sortOrder = "Asc";
-        }
-        if (!limit) {
-            limit = 10;
-        }
-
-        const config = {
-            method: "get",
-            url: `https://develop.roblox.com/v2/assets/${AssetId}/versions`,
-            params: {
-                PlaceId,
-                sortOrder,
-                limit,
-                cursor
-            }
-        };
-        axios(config)
-            .then(response => {
-                resolve(response.data);
+    ): Promise<PlaceStatistics> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/places/${placeId}/stats/${type}`,
+                authRequired: true,
+                params: {
+                    granularity,
+                    divisionType,
+                    startTime,
+                    endTime
+                }
             })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getPlaceConfig (PlaceId: number): Promise<PlaceConfiguration> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://develop.roblox.com/v2/places/${PlaceId}`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-async function updatePlaceConfig (PlaceId: number, PlaceConfig: PlaceConfiguration): Promise<void> {
-    if (!axios.defaults.headers.common.Cookie) {
-        Promise.reject(new Error("No cookie has been set."));
-    }
-    await axios
-        .post(`https://develop.roblox.com/v2/places/${PlaceId}`, {
-            configuration: PlaceConfig
-        })
-        .catch(error => {
-            Promise.reject(error);
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
         });
-}
-
-function getGameTemplates (): Promise<GameTemplates> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`${this.baseUrl}/v1/gametemplates`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getUniverseInfo (UniverseId: number): Promise<UniverseInfo> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://develop.roblox.com/v1/universes/${UniverseId}`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function canManageAsset (UserId: number, AssetId: number): Promise<CanManage> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://develop.roblox.com/v1/user/${UserId}/canmanage/${AssetId}`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getUniverseIdFromPlaceId (PlaceId: number): Promise<UniverseIdFromPlaceId> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://apis.roblox.com/universes/v1/places/${PlaceId}/universe`)
-            .then(response => {
-                resolve(response.data.universeId);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getAssetVotingInfo (AssetIds: number[]): Promise<AssetVotingInfo[]> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://develop.roblox.com/v1/assets/voting?assetIds=${AssetIds.join(",")}`)
-            .then(response => {
-                resolve(response.data.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getGameUpdateMessages (UniverseId: number): Promise<GameUpdateMessages[]> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://develop.roblox.com/v1/gameUpdateNotifications/${UniverseId}`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function publishGameUpdateMessage (UniverseId: number, Message: string): Promise<GameUpdateMessageDetails> {
-    return new Promise((resolve, reject) => {
-        if (!axios.defaults.headers.common.Cookie) {
-            reject(new Error("No cookie has been set."));
-        }
-        axios
-            .post(`https://develop.roblox.com/v1/gameUpdateNotifications/${UniverseId}`, {
-                gameUpdateText: Message
-            })
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-async function filterText (Text: string): Promise<void> {
-    if (!axios.defaults.headers.common.Cookie) {
-        Promise.reject(new Error("No cookie has been set."));
-    }
-    await axios
-        .post(`https://develop.roblox.com/v1/gameUpdateNotifications/filter`, {
-            gameUpdateText: Text
-        })
-        .catch(error => {
-            Promise.reject(error);
-        });
-}
-
-function updateUniverseConfig (
-    UniverseId: number,
-    UniverseConfig: UniverseConfigOptions,
-): Promise<UpdatedUniverseConfig> {
-    return new Promise((resolve, reject) => {
-        if (!axios.defaults.headers.common.Cookie) {
-            reject(new Error("No cookie has been set."));
-        }
-        const config = {
-            method: "patch",
-            url: `https://develop.roblox.com/v2/universes/${UniverseId}/configuration`,
-            params: {
-                UniverseConfig
-            }
-        };
-        axios(config)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-async function closeTeamTest (PlaceId: number, GameId: number): Promise<void> {
-    if (!axios.defaults.headers.common.Cookie) {
-        Promise.reject(new Error("No cookie has been set."));
     }
 
-    const config = {
-        method: "delete",
-        url: `https://develop.roblox.com/v2/teamtest/${PlaceId}`,
-        params: {
-            gameId: GameId
-        }
-    };
-    await axios(config).catch(error => {
-        Promise.reject(error);
-    });
-}
-
-function getGroupUniverses (
-    GroupId: number,
-    isArchived?: boolean,
-    sortOrder?: string,
-    limit?: number,
-    cursor?: string,
-): Promise<GroupUniverses> {
-    return new Promise((resolve, reject) => {
-        if (!sortOrder) {
-            sortOrder = "Asc";
-        }
-        if (!limit) {
-            limit = 10;
-        }
-
-        const config = {
-            method: "get",
-            url: `https://develop.roblox.com/v1/groups/${GroupId}/universes`,
-            params: {
-                isArchived,
-                sortOrder,
-                limit,
-                cursor
-            }
-        };
-
-        axios(config)
-            .then(response => {
-                resolve(response.data);
+    getCreatorDashboardMetaData (): Promise<CreatorDashboardMetaData> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/stats/creator-dashboard-metadata`,
+                authRequired: true
             })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getPlaceCompatibilites (PlaceId: number): Promise<PlaceCompatibilities> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://develop.roblox.com/v1/places/${PlaceId}/compatibilities`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getPlaceStatistics (
-    PlaceId: number,
-    type: "Revenue" | "RevenuePerVisit" | "AverageVisitLength" | "Visits",
-    granularity: "Hourly" | "Daily" | "Monthly",
-    divisionType?: "Device" | "Age",
-    startTime?: string,
-    endTime?: string,
-): Promise<PlaceStatistics> {
-    return new Promise((resolve, reject) => {
-        if (!axios.defaults.headers.common.Cookie) {
-            reject(new Error("No cookie has been set."));
-        }
-
-        if (!granularity) {
-            granularity = "Hourly";
-        }
-
-        const config = {
-            method: "get",
-            url: `https://develop.roblox.com/v1/places/${PlaceId}/stats/${type}`,
-            params: {
-                granularity,
-                divisionType,
-                startTime,
-                endTime
-            }
-        };
-        axios(config)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getCreatorDashboardMetaData (): Promise<CreatorDashboardMetaData> {
-    return new Promise((resolve, reject) => {
-        if (!axios.defaults.headers.common.Cookie) {
-            reject(new Error("No cookie has been set."));
-        }
-
-        axios
-            .get(`https://develop.roblox.com/v1/stats/creator-dashboard-metadata`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function isPlaceAgeDataAvailable (placeId: number): Promise<PlaceAgeDataAvailability> {
-    return new Promise((resolve, reject) => {
-        request({
-            method: "get",
-            url: `https://develop.roblox.com/v1/places/${placeId}/stats/is-age-data-available`,
-            requiresAuth: true
-        }).then(response => {
-            resolve(response.data.isAgeDataAvailable);
-        }).catch(error => {
-            reject(error);
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
         });
-    });
+    }
+
+    isPlaceAgeDataAvailable (placeId: number): Promise<PlaceAgeDataAvailability> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/places/${placeId}/stats/is-age-data-available`,
+                authRequired: true
+            })
+                .then(response => {
+                    resolve(response.data.isAgeDataAvailable);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
 }
+
+const Develop = new BaseDevelop();
 
 export default Develop;

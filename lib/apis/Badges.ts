@@ -1,4 +1,6 @@
 import axios from "axios";
+import Base from "./Base";
+import Client from "../client";
 
 export type BadgeInfo = {
     id: number;
@@ -71,171 +73,149 @@ export type NewBadgeDetails = {
     updated: Date;
 };
 
-type BaseBadge = {
-    getBadgeInfo(BadgeId: number): Promise<BadgeInfo>;
-    updateBadgeConfig(BadgeId: number, name: string, description: string, enabled: boolean): Promise<void>;
-    getMetaData(): Promise<BadgeMetaData>;
-    getUniverseBadges(
-        UniverseId: number,
+class BaseBadge extends Base {
+    constructor (client?: Client) {
+        super({
+            baseUrl: "https://badges.roblox.com/",
+            client
+        });
+    }
+
+    getBadgeInfo (badgeId: number): Promise<BadgeInfo> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/badges/${badgeId}`,
+                authRequired: false
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    async updateBadgeConfig (badgeId: number, name: string, description: string, enabled: boolean): Promise<void> {
+        await this.request({
+            method: "patch",
+            path: `v1/badges/${badgeId}`,
+            authRequired: true,
+            data: {
+                name,
+                description,
+                enabled
+            }
+        }).catch(error => {
+            Promise.reject(error);
+        });
+    }
+
+    getMetaData (): Promise<BadgeMetaData> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: "v1/badges/metadata",
+                authRequired: false
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    getUniverseBadges (
+        universeId: number,
         limit?: 10 | 25 | 50 | 100,
         cursor?: string,
         sortOrder?: "Asc" | "Desc",
-    ): Promise<UniverseBadges>;
-    getUserBadges(UserId: number): Promise<UserBadges>;
-    getFreeBadgesQuota(UniverseId: number): Promise<FreeBadgesQuota>;
-    getUserBadgeAwardDates(UserId: number, BadgeIds: number[]): Promise<UserBadgeAwardDates[]>;
-    removeUserBadge(UserId: number, BadgeId: number): Promise<void>;
-    removeClientBadge(BadgeId: number): Promise<void>;
-    createBadge(): BadgeBuilder;
-};
+    ): Promise<UniverseBadges> {
+        return new Promise((resolve, reject) => {
+            if (!sortOrder) {
+                sortOrder = "Asc";
+            }
+            if (!limit) {
+                limit = 10;
+            }
 
-const Badges: BaseBadge = {
-    getBadgeInfo,
-    updateBadgeConfig,
-    getMetaData,
-    getUniverseBadges,
-    getUserBadges,
-    getFreeBadgesQuota,
-    getUserBadgeAwardDates,
-    removeUserBadge,
-    removeClientBadge,
-    createBadge
-};
-
-function getBadgeInfo (BadgeId: number): Promise<BadgeInfo> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://badges.roblox.com/v1/badges/${BadgeId}`)
-            .then(response => {
-                resolve(response.data);
+            this.request({
+                method: "get",
+                path: `v1/universes/${universeId}`,
+                authRequired: false,
+                params: {
+                    limit,
+                    cursor,
+                    sortOrder
+                }
             })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-async function updateBadgeConfig (BadgeId: number, name: string, description: string, enabled: boolean): Promise<void> {
-    if (!axios.defaults.headers.common.Cookie) {
-        Promise.reject(new Error("No cookie has been set."));
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
     }
-    await axios
-        .patch(`https://badges.roblox.com/v1/badges/${BadgeId}`, {
-            name,
-            description,
-            enabled
-        })
-        .catch(error => {
+
+    getUserBadges (userId: number): Promise<UserBadges> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/users/${userId}/badges`,
+                authRequired: false
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    getFreeBadgesQuota (universeId: number): Promise<FreeBadgesQuota> {
+        return new Promise((resolve, reject) => {
+            this.request({
+                method: "get",
+                path: `v1/universes/${universeId}/free-badges-quota`,
+                authRequired: false
+            })
+                .then(response => {
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    async removeUserBadge (userId: number, badgeId: number): Promise<void> {
+        await this.request({
+            method: "delete",
+            path: `v1/user/${userId}/badges/${badgeId}`,
+            authRequired: true
+        }).catch(error => {
             Promise.reject(error);
         });
-}
-
-function getMetaData (): Promise<BadgeMetaData> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://badges.roblox.com/v1/badges/metadata`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getUniverseBadges (
-    UniverseId: number,
-    limit?: 10 | 25 | 50 | 100,
-    cursor?: string,
-    sortOrder?: "Asc" | "Desc",
-): Promise<UniverseBadges> {
-    return new Promise((resolve, reject) => {
-        if (!sortOrder) {
-            sortOrder = "Asc";
-        }
-        if (!limit) {
-            limit = 10;
-        }
-
-        const config = {
-            method: "get",
-            url: `https://badges.roblox.com/v1/universes/${UniverseId}/badges`,
-            params: {
-                limit,
-                cursor,
-                sortOrder
-            }
-        };
-
-        axios(config)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getUserBadges (UserId: number): Promise<UserBadges> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://badges.roblox.com/v1/users/${UserId}/badges`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getFreeBadgesQuota (UniverseId: number): Promise<FreeBadgesQuota> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://badges.roblox.com/v1/universes/${UniverseId}/free-badges-quota`)
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-function getUserBadgeAwardDates (UserId: number, BadgeIds: number[]): Promise<UserBadgeAwardDates[]> {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(`https://badges.roblox.com/v1/users/${UserId}/badges/awarded-dates?badgeIds=${BadgeIds.join(",")}`)
-            .then(response => {
-                resolve(response.data.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-async function removeUserBadge (UserId: number, BadgeId: number): Promise<void> {
-    if (!axios.defaults.headers.common.Cookie) {
-        Promise.reject(new Error("No cookie has been set."));
     }
-    await axios.delete(`https://badges.roblox.com/v1/user/${UserId}/badges/${BadgeId}`).catch(error => {
-        Promise.reject(error);
-    });
-}
 
-async function removeClientBadge (BadgeId: number): Promise<void> {
-    if (!axios.defaults.headers.common.Cookie) {
-        Promise.reject(new Error("No cookie has been set."));
+    async removeClientBadge (badgeId: number): Promise<void> {
+        await this.request({
+            method: "delete",
+            path: `v1/user/badges/${badgeId}`,
+            authRequired: true
+        }).catch(error => {
+            Promise.reject(error);
+        });
     }
-    await axios.delete(`https://badges.roblox.com/v1/user/badges/${BadgeId}`).catch(error => {
-        Promise.reject(error);
-    });
-}
 
-function createBadge (): BadgeBuilder {
-    return new BadgeBuilder();
+    createBadge (): BadgeBuilder {
+        return new BadgeBuilder();
+    }
 }
 
 class BadgeBuilder {
@@ -309,5 +289,7 @@ class BadgeBuilder {
         });
     }
 }
+
+const Badges = new BaseBadge();
 
 export default Badges;

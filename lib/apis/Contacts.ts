@@ -30,7 +30,7 @@ class BaseContacts extends Base {
             this.request({
                 method: "get",
                 path: "v1/contacts/metadata",
-                requiresAuth: false
+                authRequired: false
             })
                 .then(response => {
                     resolve(response.data);
@@ -46,7 +46,7 @@ class BaseContacts extends Base {
             this.request({
                 method: "post",
                 path: "v1/user/get-tags",
-                requiresAuth: true,
+                authRequired: true,
                 data: {
                     targetUserIds: userIds
                 }
@@ -65,7 +65,7 @@ class BaseContacts extends Base {
             this.request({
                 method: "post",
                 path: "v1/user/tag",
-                requiresAuth: true,
+                authRequired: true,
                 data: {
                     targetUserId: userId,
                     userTag: tag

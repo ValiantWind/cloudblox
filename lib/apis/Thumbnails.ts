@@ -19,7 +19,7 @@ export type BadgeIcon = {
     targetId: number;
     state: string;
     imageUrl: string;
-}
+};
 
 export type BundleThumbnail = BadgeIcon;
 
@@ -41,7 +41,7 @@ class BaseThumbnails extends Base {
             this.request({
                 method: "get",
                 path: "v1/assets-thumbnail-3d",
-                requiresAuth: false,
+                authRequired: false,
                 params: {
                     assetId
                 }
@@ -60,7 +60,7 @@ class BaseThumbnails extends Base {
             this.request({
                 method: "get",
                 path: "v1/asset-thumbnail-animated",
-                requiresAuth: false,
+                authRequired: false,
                 params: {
                     assetId
                 }
@@ -79,7 +79,7 @@ class BaseThumbnails extends Base {
             this.request({
                 method: "get",
                 path: "v1/users/avatar-3d",
-                requiresAuth: false,
+                authRequired: false,
                 params: {
                     userId
                 }
@@ -98,7 +98,7 @@ class BaseThumbnails extends Base {
             this.request({
                 method: "get",
                 path: "v1/metadata",
-                requiresAuth: false
+                authRequired: false
             })
                 .then(response => {
                     resolve(response.data);
@@ -114,7 +114,7 @@ class BaseThumbnails extends Base {
             this.request({
                 method: "get",
                 path: `v1/badges/icons?badgeIds=${badgeId}&size=150x150&format=Png&isCircular=${isCircular}`,
-                requiresAuth: false
+                authRequired: false
             })
                 .then(response => {
                     resolve(response.data.data[0]);
@@ -130,7 +130,7 @@ class BaseThumbnails extends Base {
             this.request({
                 method: "get",
                 path: `v1/bundles/thumbnails?bundleIds=${bundleId}&size=${size}&format=Png&isCircular=${isCircular}`,
-                requiresAuth: false
+                authRequired: false
             })
                 .then(response => {
                     resolve(response.data.data[0]);

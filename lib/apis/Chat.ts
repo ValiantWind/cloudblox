@@ -1,4 +1,5 @@
 import axios from "axios";
+import Base from "./Base";
 
 export type ClientChatSettings = {
     chatEnabled: boolean;
@@ -289,6 +290,8 @@ const Chat: BaseChat = {
     setClientTypingStatus
 };
 
+class BaseChatt extends Base {}
+
 function getClientChatSettings (): Promise<ClientChatSettings> {
     return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
@@ -480,7 +483,7 @@ function getLatestMessages (conversationIds: number[], pageSize: number): Promis
 }
 
 function addUsersToConversation (conversationId: number, UserIds: number[]): Promise<ConversationStatus> {
-    return new Promise(reject => {
+    return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
             reject(new Error("No cookie has been set."));
         }
@@ -536,7 +539,7 @@ function markConversationAsSeen (conversationIds: number[]): Promise<ChatResultT
 }
 
 function removeUserFromConversation (conversationId: number, userId: number): Promise<ConversationResultStatus> {
-    return new Promise(reject => {
+    return new Promise((resolve, reject) => {
         if (!axios.defaults.headers.common.Cookie) {
             reject(new Error("No cookie has been set."));
         }

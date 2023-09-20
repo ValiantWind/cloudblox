@@ -20,22 +20,23 @@ class BaseEconomy extends BaseAPI {
             this.request({
                 method: "get",
                 path: `v1/user/currency`,
-                requiresAuth: true
-            }).then(response => {
-                resolve(response.data.robux);
-            }).catch(error => {
-                reject(error);
-            });
+                authRequired: true
+            })
+                .then(response => {
+                    resolve(response.data.robux);
+                })
+                .catch(error => {
+                    reject(error);
+                });
         });
     }
-
 
     // GetProductInfo(assetId: number): Promise<ProductInfo> {
     // 	return new Promise((resolve, reject) => {
     // 	this.request({
     // 		method: 'get',
     // 		path: `v2/assets/${assetId}/details`,
-    // 		requiresAuth: false
+    // 		authRequired: false
     // 	}).then(response => {
     // 		resolve(response.data)
     // 	}).catch(error => {
