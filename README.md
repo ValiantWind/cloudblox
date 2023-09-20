@@ -36,6 +36,11 @@ Users.getUserInfo(1)
 MessagingService.PublishAsync("topic", "message")
 
 ```
+# Contributing
+
+Contributing would be extremely appreciated. If you have the time, please consider.
+
+View [CONTRIBUTING.md](https://github.com/ValiantWind/cloudblox/blob/main/CONTRIBUTING.md) on how to properly contribute
 
 # License
 
