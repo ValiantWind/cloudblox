@@ -53,3 +53,13 @@ I have been approved by Roblox to use the name "cloudblox".
 This package **NOT** is affiliated or endorsed by Roblox Corp.
 
 I have simply been given the rights to use "cloudblox" for this package.
+
+# Support
+
+If you find a bug, please open an issue describing what it is and how to reproduce it.
+
+If you have any questions or need support, you can message me on Roblox. [Click to view my profile.](https://www.roblox.com/users/187808735/profile)
+
+Alternatively, you can send me a friend request on Discord (Username: valiantwind).
+
+
