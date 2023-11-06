@@ -1,6 +1,6 @@
 import axios from "axios";
 import EventEmitter from "events";
-// import { Games, Avatar, Badges, Catalog, Develop, Groups, Thumbnails, Users, Auth } from "../dist/index";
+import { Games, Avatar, Badges, Catalog, Develop, Groups, Thumbnails, Users } from "../dist/index";
 
 import request from "../lib/request";
 
@@ -24,20 +24,12 @@ import request from "../lib/request";
 // 	displayName: string;
 // }>
 
-class TestClass extends EventEmitter {
-	constructor(){
-		super()
-	}
 
-	test(){
-		
-	}
-	
-}
 
 async function test() {
-	const testclass = new TestClass()
+	const universeId = await Develop.getUniverseIdFromPlace(606849621)
 
+	console.log(universeId)
 
 }
 

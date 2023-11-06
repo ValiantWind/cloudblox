@@ -359,9 +359,9 @@ class BaseDevelop extends Base {
 
     getUniverseIdFromPlace (placeId: number): Promise<UniverseIdFromPlaceId> {
         return new Promise((resolve, reject) => {
-            this.request({
+            this.requestOverride({
                 method: "get",
-                path: `v1/places/${placeId}/universe`,
+                url: `https://apis.roblox.com/universes/v1/places/${placeId}/universe`,
                 authRequired: false
             })
                 .then(response => {

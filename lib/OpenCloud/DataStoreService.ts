@@ -25,9 +25,17 @@ export type DataStoreEntries = {
     nextPageCursor: string;
 };
 
+export type EntryVersion = {
+	version: string;
+	deleted: boolean;
+	contentLength: number;
+	createdTime: string;
+	objectCreatedTime: string;
+}
+
 type BaseDataStoreService = {
-    ListDataStores(UniverseID: number, cursor?: string, limit?: number, prefix?: string): Promise<DataStores>;
-    GetDataStore(name: string, universeId: number): DataStore;
+    ListDataStores(prefix: string, limit: number): Promise<DataStores>;
+    GetDataStore(name: string, scope: string = "global"): DataStore;
 };
 
 const DataStoreService: BaseDataStoreService = {
@@ -35,13 +43,13 @@ const DataStoreService: BaseDataStoreService = {
     GetDataStore
 };
 
-function ListDataStores (UniverseId: number, prefix: string, limit: number): Promise<DataStores> {
+function ListDataStores (prefix: string, limit: number): Promise<DataStores> {
     return new Promise((resolve, reject) => {
         if (!config.DataStoreService) {
             reject(new Error("No API Key has been set for DataStoreService."));
         }
         axios
-            .get(`https://apis.roblox.com/datastores/v1/universes/${UniverseId}/standard-datastores`, {
+            .get(`https://apis.roblox.com/datastores/v1/universes/${config.UniverseId}/standard-datastores`, {
                 headers: {
                     "x-api-key": config.DataStoreService,
                     "Content-Type": "application/json"
@@ -60,29 +68,25 @@ function ListDataStores (UniverseId: number, prefix: string, limit: number): Pro
     });
 }
 
-function GetDataStore (name: string, universeId: number): DataStore {
+function GetDataStore (name: string, scope: string = "global"): DataStore {
     if (!config.DataStoreService) {
         throw new Error("No API Key has been set for DataStoreService.");
     }
     return new DataStore(
-        name,
-        universeId,
-        config.DataStoreService,
-        `https://apis.roblox.com/datastores/v1/universes/${universeId}/standard-datastores`,
+        name,        `https://apis.roblox.com/datastores/v1/universes/${config.UniverseId}/standard-datastores`,
+			scope
     );
 }
 
 class DataStore {
-    public readonly name: string;
-    public readonly universeId: number;
-    public readonly scope: string;
-    private apikey: string;
+    private  name: string;
+    public readonly universeId = config.universeId;
+    public scope: string;
+    private readonly apikey = config.DataStoreService;
     private baseUrl: string;
 
-    constructor (name: string, universeId: number, apikey: string, baseUrl: string, scope = "global") {
+    constructor (name: string, baseUrl: string, scope?: string) {
         this.name = name;
-        this.universeId = universeId;
-        this.apikey = apikey;
         this.baseUrl = baseUrl;
         this.scope = scope;
     }
@@ -118,7 +122,7 @@ class DataStore {
         });
     }
 
-    GetAsync (entryKey: string): Promise<object> {
+    GetEntry (entryKey: string): Promise<object> {
         return new Promise((resolve, reject) => {
             const requestConfig = {
                 method: "get",
@@ -144,8 +148,12 @@ class DataStore {
         });
     }
 
-    SetAsync (entryKey: string, value: any): Promise<object> {
+    SetEntry (entryKey: string, value: string, attributes?: string, userIds?: string): Promise<object> {
         return new Promise((resolve, reject) => {
+
+					delete attribute;
+					delete userIds;
+
             const requestConfig = {
                 method: "post",
                 url: `${this.baseUrl}/datastore/entries/entry`,
@@ -157,7 +165,9 @@ class DataStore {
                 headers: {
                     "x-api-key": this.apikey,
                     "content-md5": crypto.createHash("md5").update(JSON.stringify(value)).digest("base64"),
-                    "content-type": "application/json"
+                    "content-type": "application/json",
+										"roblox-entry-attributes": attributes,
+										"roblox-entry-userids":  userIds
                 },
                 data: {
                     value
@@ -173,7 +183,7 @@ class DataStore {
         });
     }
 
-    async RemoveEntry (entryKey: string): Promise<void> {
+    async RemoveEntry(entryKey: string): Promise<void> {
         const requestConfig = {
             method: "delete",
             url: `${this.baseUrl}/datastore/entries/entry`,
@@ -191,7 +201,7 @@ class DataStore {
         });
     }
 
-    IncrementAsync (entryKey: string, amount: number): Promise<object> {
+    IncrementEntry (entryKey: string, amount: number): Promise<object> {
         return new Promise((resolve, reject) => {
             const requestConfig = {
                 method: "post",
@@ -252,7 +262,7 @@ class DataStore {
         endTime?: string,
         sortOrder?: string,
         limit?: number,
-    ): Promise<object> {
+    ): Promise<EntryVersion[]> {
         return new Promise((resolve, reject) => {
             if (!limit) {
                 limit = 5;
@@ -285,6 +295,20 @@ class DataStore {
                 });
         });
     }
+}
+
+// function GetOrderedDataStore(name: string, universeId: string): OrderedDataStore {
+// 	if (!config.DataStoreService) {
+// 		throw new Error("No API Key has been set for DataStoreService.")
+// 	}
+
+// 	return new OrderedDataStore(
+// 	name, "https://apis.roblox.com/datastores/v1/universes/${universeId}/standard-datastores",
+// 	scope)
+// }
+
+class OrderedDataStore {
+	
 }
 
 export default DataStoreService;
