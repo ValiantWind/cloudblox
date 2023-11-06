@@ -1,4 +1,5 @@
 import axios from "axios";
+import { EventEmitter } from "node:events";
 
 export type ClientUserInfo = {
     id: number;
@@ -66,13 +67,14 @@ interface Config {
     PlacePublishing?: string;
     DataStoreService?: string;
     OrderedDataStores?: string;
+		Groups?: string;
 }
 
 export type UserId = number;
 
 const config: Config = {};
 
-export default class Client {
+export default class Client extends EventEmitter {
     protected readonly baseUsersUrl?: string = "https://users.roblox.com";
     clientUserId?: number;
 
@@ -82,6 +84,7 @@ export default class Client {
         Assets,
         PlacePublishing,
         DataStoreService,
+				Groups,
         Cookie
 		}: {
 				UniverseId?: number;
@@ -89,6 +92,7 @@ export default class Client {
         Assets?: string;
         PlacePublishing?: string;
         DataStoreService?: string;
+				Groups?: string;
         Cookie?: string;
 		} = {}) {
         config.UniverseId = UniverseId;
@@ -96,6 +100,7 @@ export default class Client {
         config.Assets = Assets;
         config.PlacePublishing = PlacePublishing;
         config.DataStoreService = DataStoreService;
+				config.Groups = Groups;
         axios.defaults.headers.common.Cookie = `.ROBLOSECURITY=${Cookie}`;
     }
 

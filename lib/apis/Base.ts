@@ -10,6 +10,14 @@ export declare type RequestParameters = {
     data?: object;
 };
 
+export declare type RequestOverrideParameters = {
+	method: string;
+	url: string;
+	authRequired: boolean;
+	params?: object;
+	data?: object;
+}
+
 export default class BaseAPI extends EventEmitter {
     public baseUrl: string;
     public client: Client;
@@ -19,19 +27,36 @@ export default class BaseAPI extends EventEmitter {
         this.baseUrl = baseUrl;
         this.client = client;
     }
-    request (requestParameters: RequestParameters) {
-        if (requestParameters.authRequired) {
+    request (requestParams: RequestParameters) {
+        if (requestParams.authRequired) {
             if (!axios.defaults.headers.common.Cookie) {
                 throw new Error("No cookie has been set.");
             }
         }
         const config = {
-            method: requestParameters.method,
-            url: `${this.baseUrl}${requestParameters.path}`,
-            params: requestParameters.params,
-            data: requestParameters.data
+            method: requestParams.method,
+            url: `${this.baseUrl}${requestParams.path}`,
+            params: requestParams.params,
+            data: requestParams.data
         };
 
         return axios(config);
     }
+
+		requestOverride(requestParams: RequestOverrideParameters){
+				if(requestParams.authRequired) {
+						if(!axios.defaults.headers.common.Cookie){
+								throw new Error("No cookie has been set.")
+							}
+				}
+
+				const config = {
+						method: requestParams.method,
+						url: requestParams.url,
+						params: requestParams.params,
+						data: requestParams.data
+				};
+
+				return axios(config);
+		}
 }
