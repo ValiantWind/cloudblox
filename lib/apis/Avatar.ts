@@ -529,7 +529,7 @@ class BaseAvatar extends Base {
         });
     }
 
-    getRecentItems (recentItemListType: 0 | 1 | 2 | 3 | 4 | 5 | 6): Promise<RecentItems> {
+    getRecentItems (recentItemListType: 0 | 1 | 2 | 3 | 4 | 5 | 6 | number): Promise<RecentItems> {
         return new Promise((resolve, reject) => {
             this.request({
                 method: "get",

@@ -1,6 +1,5 @@
 import Client from "../client";
 import axios from "axios";
-import EventEmitter from "node:events";
 
 export declare type RequestParameters = {
     method: string;
@@ -18,12 +17,11 @@ export declare type RequestOverrideParameters = {
 	data?: object;
 }
 
-export default class BaseAPI extends EventEmitter {
+export default class BaseAPI {
     public baseUrl: string;
     public client: Client;
 
     constructor ({ baseUrl, client }: { baseUrl: string; client?: Client }) {
-        super();
         this.baseUrl = baseUrl;
         this.client = client;
     }
