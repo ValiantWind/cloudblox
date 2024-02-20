@@ -103,7 +103,7 @@ class BaseThumbnails extends Base {
         });
     }
 
-	getAvatarBodyshot(userId: number, size?: "30x30" | "48x48" | "50x50" | "60x60" | "75x75" | "100x100" | "110x110" | "150x150" | "180x180" | "352x352" | "420x420" | "720x720", imageFormat?: "Png" | "Jpeg", isCircular?: boolean): Promise<AvatarHeadshot> {
+	getAvatarBodyshot(userId: number, size?: "30x30" | "48x48" | "50x50" | "60x60" | "75x75" | "100x100" | "110x110" | "150x150" | "180x180" | "352x352" | "420x420" | "720x720" | string, imageFormat?: "Png" | "Jpeg" | string, isCircular?: boolean): Promise<AvatarHeadshot> {
 			return new Promise((resolve, reject) => {
 					this.request({
 							method: "get",
@@ -144,7 +144,7 @@ class BaseThumbnails extends Base {
         });
     }
 
-	getAvatarHeadshot(userId: number, size?: "48x48" | "50x50" | "60x60" | "75x75" | "100x100" | "110x110" | "150x150" | "180x180" | "352x352" | "420x420" | "720x720", imageFormat?: "Png" | "Jpeg", isCircular?: boolean): Promise<AvatarHeadshot> {
+	getAvatarHeadshot(userId: number, size?: "48x48" | "50x50" | "60x60" | "75x75" | "100x100" | "110x110" | "150x150" | "180x180" | "352x352" | "420x420" | "720x720" | string, imageFormat?: "Png" | "Jpeg" | string, isCircular?: boolean): Promise<AvatarHeadshot> {
 			return new Promise((resolve, reject) => {
 					this.request({
 							method: "get",
@@ -166,7 +166,7 @@ class BaseThumbnails extends Base {
 		})
 	}
 
-	getAvatarBust(userId: number, size?: "48x48" | "50x50" | "60x60" | "75x75" | "100x100" | "110x110" | "150x150" | "180x180" | "352x352" | "420x420", isCircular?: boolean): Promise<AvatarBust> {
+	getAvatarBust(userId: number, size?: "48x48" | "50x50" | "60x60" | "75x75" | "100x100" | "110x110" | "150x150" | "180x180" | "352x352" | "420x420" | string, isCircular?: boolean): Promise<AvatarBust> {
 			return new Promise((resolve, reject) => {
 					this.request({
 							method: "get",
@@ -223,7 +223,7 @@ class BaseThumbnails extends Base {
         });
     }
 
-    getBundle (bundleId: number, size: "150x150" | "420x420", isCircular?: boolean): Promise<BundleThumbnail> {
+    getBundle (bundleId: number, size: "150x150" | "420x420" | string, isCircular?: boolean): Promise<BundleThumbnail> {
         return new Promise((resolve, reject) => {
             this.request({
                 method: "get",
@@ -281,7 +281,7 @@ class BaseThumbnails extends Base {
 			})
 		}
 
-		getGroupIcon(groupId: number, size: "150x150" | "420x420", isCircular?: boolean): Promise<GroupIcon> {
+		getGroupIcon(groupId: number, size: "150x150" | "420x420" | string, isCircular?: boolean): Promise<GroupIcon> {
 			return new Promise((resolve, reject) => {
 				this.request({
 					method: "get",
