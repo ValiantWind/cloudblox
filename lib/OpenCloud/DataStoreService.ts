@@ -35,7 +35,7 @@ export type EntryVersion = {
 
 type BaseDataStoreService = {
     ListDataStores(prefix: string, limit: number): Promise<DataStores>;
-    GetDataStore(name: string, scope: string = "global"): DataStore;
+    GetDataStore(name: string, scope: string): DataStore;
 };
 
 const DataStoreService: BaseDataStoreService = {
@@ -80,7 +80,7 @@ function GetDataStore (name: string, scope: string = "global"): DataStore {
 
 class DataStore {
     private  name: string;
-    public readonly universeId = config.universeId;
+    public readonly universeId = config.UniverseId;
     public scope: string;
     private readonly apikey = config.DataStoreService;
     private baseUrl: string;
@@ -150,9 +150,6 @@ class DataStore {
 
     SetEntry (entryKey: string, value: string, attributes?: string, userIds?: string): Promise<object> {
         return new Promise((resolve, reject) => {
-
-					delete attribute;
-					delete userIds;
 
             const requestConfig = {
                 method: "post",
